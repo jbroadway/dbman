@@ -39,15 +39,15 @@ class DBMan {
 			case 'mysql':
 				$res = db_fetch_array ('describe `' . $table . '`');
 				foreach ($res as $row) {
-					$type = DBMan::parse_type ($row->type);
+					$type = DBMan::parse_type ($row->Type);
 					$out[] = (object) array (
-						'name' => $row->field,
+						'name' => $row->Field,
 						'type' => $type['type'],
 						'length' => $type['length'],
-						'notnull' => ($row->null == 'NO') ? 'No' : 'Yes',
-						'key' => ($row->key == 'PRI') ? 'Primary' : (! empty ($row->key)) ? 'Secondary' : '',
-						'default' => $row->default,
-						'extra' => $row->extra,
+						'notnull' => ($row->Null == 'NO') ? 'No' : 'Yes',
+						'key' => ($row->Key == 'PRI') ? 'Primary' : (! empty ($row->Key)) ? 'Secondary' : '',
+						'default' => $row->Default,
+						'extra' => $row->Extra,
 						'original' => $row
 					);
 				}
@@ -72,8 +72,8 @@ class DBMan {
 			case 'mysql':
 				$res = db_fetch_array ('describe `' . $table . '`');
 				foreach ($res as $row) {
-					if ($row->key == 'PRI') {
-						return $row->field;
+					if ($row->Key == 'PRI') {
+						return $row->Field;
 					}
 				}
 		}
