@@ -1,0 +1,26 @@
+<p><a href="/dbman/index">&laquo; {"Back"}</a></p>
+
+<p>
+<table width="100%">
+	<tr>
+		<th width="20%">{"Column"}</th>
+		<th width="15%">{"Type"}</th>
+		<th width="10%">{"Length"}</th>
+		<th width="10%">{"Null"}</th>
+		<th width="10%">{"Key"}</th>
+		<th width="15%">{"Default"}</th>
+		<th width="20%">{"Extra"}</th>
+	</tr>
+{% foreach columns %}
+	<tr>
+		<td>{{ loop_value->name }}&nbsp;</td>
+		<td>{{ loop_value->type }}&nbsp;</td>
+		<td>{{ loop_value->length }}&nbsp;</td>
+		<td>{{ loop_value->notnull }}&nbsp;</td>
+		<td>{{ loop_value->key }}&nbsp;</td>
+		<td>{{ loop_value->default }}&nbsp;</td>
+		<td>{{ loop_value->extra }}&nbsp;</td>
+	</tr>
+{% end %}
+</table>
+</p>

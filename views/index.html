@@ -1,0 +1,18 @@
+<p><a href="/dbman/shell">{"SQL Shell"}</a></p>
+
+<p>
+<table width="100%">
+	<tr>
+		<th width="40%">{"Table"}</th>
+		<th width="30%" style="text-align: right">{"Count"}</th>
+		<th width="30%" style="text-align: right">&nbsp;</th>
+	</tr>
+{% foreach tables %}
+	<tr>
+		<td><a href="/dbman/browse?table={{ loop_value }}">{{ loop_value }}</a></td>
+		<td style="text-align: right">{{ loop_value|DBMan::count }}</td>
+		<td style="text-align: right"><a href="/dbman/info?table={{ loop_value }}">{"Info"}</a> | <a href="/dbman/export?table={{ loop_value }}">{"Export"}</a> | <a href="/dbman/drop?table={{ loop_value }}" onclick="return confirm ('{"Are you sure you want to permanently erase this table?"}');">{"Drop"}</a></td>
+	</tr>
+{% end %}
+</table>
+</p>
