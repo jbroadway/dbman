@@ -10,7 +10,7 @@ if (! isset ($_GET['table'])) {
 	exit;
 }
 
-$page->template = false;
+$page->layout = false;
 header ('Cache-control: private');
 header ('Content-Type: text/plain');
 header ('Content-Disposition: attachment; filename=' . $_GET['table'] . '-' . gmdate ('Y-m-d') . '.csv');
