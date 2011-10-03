@@ -4,7 +4,7 @@ class DBMan {
 	/**
 	 * List all tables.
 	 */
-	function list_tables () {
+	static function list_tables () {
 		switch (conf ('Database', 'driver')) {
 			case 'sqlite':
 				return db_shift_array ('select name from sqlite_master where type = "table" order by name asc');
@@ -17,7 +17,7 @@ class DBMan {
 	/**
 	 * Return an array of columns and their details for a table.
 	 */
-	function table_info ($table) {
+	static function table_info ($table) {
 		$out = array ();
 		switch (conf ('Database', 'driver')) {
 			case 'sqlite':
@@ -59,7 +59,7 @@ class DBMan {
 	 * Return the primary key field of a table. Note that this currently
 	 * only supports tables with single-field primary keys.
 	 */
-	function primary_key ($table) {
+	static function primary_key ($table) {
 		switch (conf ('Database', 'driver')) {
 			case 'sqlite':
 				$res = db_fetch_array ('pragma table_info(' . $table . ')');
@@ -83,7 +83,7 @@ class DBMan {
 	/**
 	 * Number of rows in a table.
 	 */
-	function count ($table) {
+	static function count ($table) {
 		return db_shift ('select count(*) from ' . $table);
 	}
 
@@ -97,7 +97,7 @@ class DBMan {
 	 *
 	 *     enum("yes","no") -> type:'enum', length:'', other:'"yes","no"'
 	 */
-	function parse_type ($type) {
+	static function parse_type ($type) {
 		if (strpos ($type, '(') !== false) {
 			list ($type, $length) = explode ('(', $type);
 			$length = trim ($length, ')');
@@ -113,7 +113,7 @@ class DBMan {
 	/**
 	 * Get form rules for a field.
 	 */
-	function get_rules ($field) {
+	static function get_rules ($field) {
 		$rules = array ();
 
 		// skip auto-incrementing fields
@@ -136,7 +136,7 @@ class DBMan {
 	/**
 	 * Determine whether the specified field is auto-incrementing.
 	 */
-	function is_auto_incrementing ($field) {
+	static function is_auto_incrementing ($field) {
 		// skip auto-incrementing fields
 		if (conf ('Database', 'driver') == 'sqlite' && $field->type == 'integer' && $field->key == 'Primary') {
 			return true;
