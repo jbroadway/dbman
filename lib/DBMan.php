@@ -2,10 +2,18 @@
 
 class DBMan {
 	/**
+	 * Get the database driver.
+	 */
+	static function driver () {
+		$m = conf ('Database', 'master');
+		return $m['driver'];
+	}
+
+	/**
 	 * List all tables.
 	 */
 	static function list_tables () {
-		switch (conf ('Database', 'driver')) {
+		switch (DBMan::driver ()) {
 			case 'sqlite':
 				return db_shift_array ('select name from sqlite_master where type = "table" order by name asc');
 			case 'mysql':
@@ -19,7 +27,7 @@ class DBMan {
 	 */
 	static function table_info ($table) {
 		$out = array ();
-		switch (conf ('Database', 'driver')) {
+		switch (DBMan::driver ()) {
 			case 'sqlite':
 				$res = db_fetch_array ('pragma table_info(' . $table . ')');
 				foreach ($res as $row) {
@@ -60,7 +68,7 @@ class DBMan {
 	 * only supports tables with single-field primary keys.
 	 */
 	static function primary_key ($table) {
-		switch (conf ('Database', 'driver')) {
+		switch (DBMan::driver ()) {
 			case 'sqlite':
 				$res = db_fetch_array ('pragma table_info(' . $table . ')');
 				foreach ($res as $row) {
@@ -138,7 +146,7 @@ class DBMan {
 	 */
 	static function is_auto_incrementing ($field) {
 		// skip auto-incrementing fields
-		if (conf ('Database', 'driver') == 'sqlite' && $field->type == 'integer' && $field->key == 'Primary') {
+		if (DBMan::driver () == 'sqlite' && $field->type == 'integer' && $field->key == 'Primary') {
 			return true;
 		}
 		if (strtolower ($field->extra) == 'auto_increment') {
