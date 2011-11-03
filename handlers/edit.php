@@ -17,6 +17,7 @@ $page->title = i18n_get ('Editing Item') . ': ' . $_GET['table'] . '/' . $_GET['
 $fields = DBMan::table_info ($_GET['table']);
 
 $f = new Form ('post');
+$f->verify_csrf = false;
 
 // generate rules for required fields
 foreach ($fields as $field) {
