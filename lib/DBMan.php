@@ -4,7 +4,7 @@ class DBMan {
 	/**
 	 * Get the database driver.
 	 */
-	static function driver () {
+	public static function driver () {
 		$m = conf ('Database', 'master');
 		return $m['driver'];
 	}
@@ -12,7 +12,7 @@ class DBMan {
 	/**
 	 * List all tables.
 	 */
-	static function list_tables () {
+	public static function list_tables () {
 		switch (DBMan::driver ()) {
 			case 'sqlite':
 				return db_shift_array ('select name from sqlite_master where type = "table" order by name asc');
@@ -25,7 +25,7 @@ class DBMan {
 	/**
 	 * Return an array of columns and their details for a table.
 	 */
-	static function table_info ($table) {
+	public static function table_info ($table) {
 		$out = array ();
 		switch (DBMan::driver ()) {
 			case 'sqlite':
@@ -67,7 +67,7 @@ class DBMan {
 	 * Return the primary key field of a table. Note that this currently
 	 * only supports tables with single-field primary keys.
 	 */
-	static function primary_key ($table) {
+	public static function primary_key ($table) {
 		switch (DBMan::driver ()) {
 			case 'sqlite':
 				$res = db_fetch_array ('pragma table_info(' . $table . ')');
@@ -91,7 +91,7 @@ class DBMan {
 	/**
 	 * Number of rows in a table.
 	 */
-	static function count ($table) {
+	public static function count ($table) {
 		return db_shift ('select count(*) from ' . $table);
 	}
 
@@ -105,7 +105,7 @@ class DBMan {
 	 *
 	 *     enum("yes","no") -> type:'enum', length:'', other:'"yes","no"'
 	 */
-	static function parse_type ($type) {
+	public static function parse_type ($type) {
 		if (strpos ($type, '(') !== false) {
 			list ($type, $length) = explode ('(', $type);
 			$length = trim ($length, ')');
@@ -121,7 +121,7 @@ class DBMan {
 	/**
 	 * Get form rules for a field.
 	 */
-	static function get_rules ($field) {
+	public static function get_rules ($field) {
 		$rules = array ();
 
 		// skip auto-incrementing fields
@@ -144,7 +144,7 @@ class DBMan {
 	/**
 	 * Determine whether the specified field is auto-incrementing.
 	 */
-	static function is_auto_incrementing ($field) {
+	public static function is_auto_incrementing ($field) {
 		// skip auto-incrementing fields
 		if (DBMan::driver () == 'sqlite' && $field->type == 'integer' && $field->key == 'Primary') {
 			return true;
