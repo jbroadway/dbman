@@ -88,13 +88,27 @@ foreach ($fields as $field) {
 	} else {
 		$rule = '';
 	}
-	printf (
-		'<p>%s:<br /><input type="text" name="%s" value="%s" />%s</p>' . "\n",
-		$field->name,
-		$field->name,
-		$o->{$field->name},
-		$rule
-	);
+
+	switch ($field->type) {
+		case 'text':
+			printf (
+				'<p>%s:<br /><textarea name="%s" cols="60" rows="8">%s</textarea>%s</p>' . "\n",
+				$field->name,
+				$field->name,
+				Template::quotes ($o->{$field->name}),
+				$rule
+			);
+			break;
+		default:
+			printf (
+				'<p>%s:<br /><input type="text" name="%s" value="%s" />%s</p>' . "\n",
+				$field->name,
+				$field->name,
+				Template::quotes ($o->{$field->name}),
+				$rule
+			);
+			break;
+	}
 }
 echo "<p><input type='submit' value='" . i18n_get ('Save Item') . "' /></p></form>\n";
 
