@@ -18,6 +18,4 @@ To do:
 * More input validation
 * Backup database as SQL
 * Delete multiple rows at once
-* More advanced paging options
 * Export CSV of shell output
-* Multiple queries at once in shell
