@@ -13,7 +13,8 @@ if (! isset ($_GET['table'])) {
 }
 
 $limit = 20;
-$_GET['offset'] = (isset ($_GET['offset'])) ? $_GET['offset'] : 0;
+$num = (isset ($_GET['num'])) ? $_GET['num'] : 1;
+$_GET['offset'] = ($num - 1) * $limit;
 
 $page->title = i18n_get ('Table') . ': ' . $_GET['table'];
 
@@ -37,18 +38,19 @@ printf (
 	i18n_get ('Add Item')
 );
 
-echo '<p>' . $count . ' ' . i18n_get ('results') . ":</p>\n";
+echo '<p style="float: left">' . $count . ' ' . i18n_get ('results') . ":</p>\n";
 
-if ($_GET['offset'] > 0) {
-	printf (
-		'<p class="previous"><a href="/dbman/browse?table=%s&offset=%s">&laquo; %s</a></p>',
-		$_GET['table'],
-		$prev,
-		i18n_get ('Previous')
-	);
+if ($count > $limit) {
+	echo '<div style="float: right">' . $this->run ('navigation/pager', array (
+		'style' => 'numbers',
+		'url' => '/dbman/browse?table=' . $_GET['table'] . '&num=%d',
+		'total' => $count,
+		'count' => count ($res),
+		'limit' => $limit
+	)) . '</div>';
 }
 
-echo "<p><table width='100%'><tr>\n";
+echo "<p style='clear: both'><table width='100%'><tr>\n";
 foreach ($headers as $header) {
 	printf ("<th>%s</th>\n", $header);
 }
@@ -79,13 +81,14 @@ foreach ($res as $row) {
 }
 echo "</table></p>\n";
 
-if ($more) {
-	printf (
-		'<p class="previous"><a href="/dbman/browse?table=%s&offset=%s">%s &raquo;</a></p>',
-		$_GET['table'],
-		$next,
-		i18n_get ('Next')
-	);
+if ($count > $limit) {
+	echo $this->run ('navigation/pager', array (
+		'style' => 'numbers',
+		'url' => '/dbman/browse?table=' . $_GET['table'] . '&num=%d',
+		'total' => $count,
+		'count' => count ($res),
+		'limit' => $limit
+	));
 }
 
 ?>
