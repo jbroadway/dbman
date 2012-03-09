@@ -48,9 +48,8 @@ if ($f->submit ()) {
 		printf ("<p>%s</p>\n<p><a href='/dbman/browse?table=%s'>&laquo; %s</a></p>\n", db_error (), $_GET['table'], i18n_get ('Back'));
 		return;
 	}
-	$page->title = i18n_get ('Item Updated');
-	printf ("<p><a href='/dbman/browse?table=%s'>&laquo; %s</a></p>\n", $_GET['table'], i18n_get ('Back'));
-	return;
+	$this->add_notification (i18n_get ('Item updated.'));
+	$this->redirect ('/dbman/browse?table=' . $_GET['table']);
 }
 
 // get the initial object from the database

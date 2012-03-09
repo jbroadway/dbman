@@ -19,9 +19,8 @@ $sql = sprintf (
 );
 
 if (db_execute ($sql, $_GET['key'])) {
-	$page->title = i18n_get ('Item Deleted');
-	printf ("<p><a href='/dbman/browse?table=%s'>&laquo; %s</a></p>\n", $_GET['table'], i18n_get ('Back'));
-	return;
+	$this->add_notification (i18n_get ('Item deleted.'));
+	$this->redirect ('/dbman/browse?table=' . $_GET['table']);
 }
 
 $page->title = i18n_get ('An Error Occurred');

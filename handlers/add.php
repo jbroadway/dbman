@@ -31,9 +31,8 @@ if ($f->submit ()) {
 	$obj->key = DBMan::primary_key ($_GET['table']);
 
 	if ($obj->put ()) {
-		$page->title = i18n_get ('Item Added');
-		printf ("<p><a href='/dbman/browse?table=%s'>&laquo; %s</a></p>\n", $_GET['table'], i18n_get ('Back'));
-		return;
+		$this->add_notification (i18n_get ('Item added.'));
+		$this->redirect ('/dbman/browse?table=' . $_GET['table']);
 	}
 	$page->title = i18n_get ('An Error Occurred');
 	printf ("<p>%s</p>\n<p><a href='/dbman/browse?table=%s'>&laquo; %s</a></p>\n", $obj->error, $_GET['table'], i18n_get ('Back'));
