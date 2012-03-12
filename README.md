@@ -18,4 +18,3 @@ To do:
 * More input validation
 * Backup database as SQL
 * Delete multiple rows at once
-* Export CSV of shell output

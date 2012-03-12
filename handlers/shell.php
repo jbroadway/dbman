@@ -47,7 +47,10 @@ foreach ($queries as $query) {
 echo $tpl->render ('dbman/shell', array ('query' => $_GET['query']));
 
 foreach ($res as $query => $info) {
-	echo '<h5><pre>' . Template::sanitize ($query) . "</pre></h5>\n";
+	printf (
+		"<h5><pre>%s</pre></h5>\n",
+		Template::sanitize ($query)
+	);
 
 	if ($info['error']) {
 		printf ("<p>%s: %s</p>\n", i18n_get ('Error'), $info['error']);
@@ -59,7 +62,13 @@ foreach ($res as $query => $info) {
 		continue;
 	}
 
-	printf ("<p>%d %s:</p>\n", count ($info['results']), i18n_get ('results'));
+	printf (
+		"<p>%d %s (<a href=\"/dbman/shell/export?query=%s\">%s</a>):</p>\n",
+		count ($info['results']),
+		i18n_get ('results'),
+		urlencode (Template::sanitize ($query)),
+		i18n_get ('Export')
+	);
 
 	echo "<p><table width='100%'><tr>\n";
 	foreach ($info['headers'] as $header) {
