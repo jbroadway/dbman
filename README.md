@@ -11,6 +11,7 @@ Features include:
 * Export as CSV
 * Drop tables
 * SQL shell
+* jQuery UI date/time selectors
 
 To do:
 
