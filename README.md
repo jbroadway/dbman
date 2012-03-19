@@ -11,6 +11,7 @@ Features include:
 * Export as CSV
 * Drop tables
 * SQL shell
+* jQuery UI date/time selectors
 
 To do:
 
@@ -18,4 +19,3 @@ To do:
 * More input validation
 * Backup database as SQL
 * Delete multiple rows at once
-* Export CSV of shell output

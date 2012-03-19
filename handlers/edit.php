@@ -67,6 +67,8 @@ $o = $f->merge_values ($o);
 $o->failed = $f->failed;
 echo "<form method='post'>\n";
 
+$timepicker_loaded = false;
+
 // generate the form fields
 foreach ($fields as $field) {
 	// disable auto-incrementing fields
@@ -97,6 +99,96 @@ foreach ($fields as $field) {
 				$field->name,
 				Template::quotes ($o->{$field->name}),
 				$rule
+			);
+			break;
+		case 'date':
+			if (! $timepicker_loaded) {
+				$page->add_script ('/js/jquery-ui/jquery-ui.css');
+				$page->add_script ('/js/jquery-ui/jquery-ui.min.js');
+				$page->add_script (
+					'<style>
+					/* css for timepicker */
+					.ui-timepicker-div .ui-widget-header{ margin-bottom: 8px; }
+					.ui-timepicker-div dl{ text-align: left; }
+					.ui-timepicker-div dl dt{ height: 25px; }
+					.ui-timepicker-div dl dd{ margin: -25px 0 10px 65px; }
+					.ui-timepicker-div td { font-size: 90%; }
+					</style>'
+				);
+				$page->add_script ('/apps/blog/js/jquery.timepicker.js');
+				$timepicker_loaded = true;
+			}
+			printf (
+				'<p>%s:<br /><input type="text" name="%s" id="%s" value="%s" />%s</p>' . "\n",
+				$field->name,
+				$field->name,
+				$field->name,
+				Template::quotes ($o->{$field->name}),
+				$rule
+			);
+			printf (
+				"<script>$(function () { $('#%s').datepicker ({ dateFormat: 'yy-mm-dd' }); });</script>\n",
+				$field->name
+			);
+			break;
+		case 'time':
+			if (! $timepicker_loaded) {
+				$page->add_script ('/js/jquery-ui/jquery-ui.css');
+				$page->add_script ('/js/jquery-ui/jquery-ui.min.js');
+				$page->add_script (
+					'<style>
+					/* css for timepicker */
+					.ui-timepicker-div .ui-widget-header{ margin-bottom: 8px; }
+					.ui-timepicker-div dl{ text-align: left; }
+					.ui-timepicker-div dl dt{ height: 25px; }
+					.ui-timepicker-div dl dd{ margin: -25px 0 10px 65px; }
+					.ui-timepicker-div td { font-size: 90%; }
+					</style>'
+				);
+				$page->add_script ('/apps/blog/js/jquery.timepicker.js');
+				$timepicker_loaded = true;
+			}
+			printf (
+				'<p>%s:<br /><input type="text" name="%s" id="%s" value="%s" />%s</p>' . "\n",
+				$field->name,
+				$field->name,
+				$field->name,
+				Template::quotes ($o->{$field->name}),
+				$rule
+			);
+			printf (
+				"<script>$(function () { $('#%s').timepicker ({ timeFormat: 'hh:mm:ss', hourGrid: 4, minuteGrid: 10 }); });</script>\n",
+				$field->name
+			);
+			break;
+		case 'datetime':
+			if (! $timepicker_loaded) {
+				$page->add_script ('/js/jquery-ui/jquery-ui.css');
+				$page->add_script ('/js/jquery-ui/jquery-ui.min.js');
+				$page->add_script (
+					'<style>
+					/* css for timepicker */
+					.ui-timepicker-div .ui-widget-header{ margin-bottom: 8px; }
+					.ui-timepicker-div dl{ text-align: left; }
+					.ui-timepicker-div dl dt{ height: 25px; }
+					.ui-timepicker-div dl dd{ margin: -25px 0 10px 65px; }
+					.ui-timepicker-div td { font-size: 90%; }
+					</style>'
+				);
+				$page->add_script ('/apps/blog/js/jquery.timepicker.js');
+				$timepicker_loaded = true;
+			}
+			printf (
+				'<p>%s:<br /><input type="text" name="%s" id="%s" value="%s" />%s</p>' . "\n",
+				$field->name,
+				$field->name,
+				$field->name,
+				Template::quotes ($o->{$field->name}),
+				$rule
+			);
+			printf (
+				"<script>$(function () { $('#%s').datetimepicker ({ timeFormat: 'hh:mm:ss', dateFormat: 'yy-mm-dd', hourGrid: 4, minuteGrid: 10 }); });</script>\n",
+				$field->name
 			);
 			break;
 		default:
