@@ -21,7 +21,7 @@ foreach ($queries as $query) {
 	if ($query === '') {
 		continue;
 	}
-	$exec = preg_match ('/^(alter|create|insert|update|delete) /i', $query);
+	$exec = preg_match ('/^(alter|create|insert|update|delete|drop) /i', $query);
 	if ($exec) {
 		$res[$query] = array (
 			'headers' => array (),
