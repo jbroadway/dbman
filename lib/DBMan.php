@@ -129,7 +129,7 @@ class DBMan {
 			return $rules;
 		}
 
-		if ($field->notnull == 'Yes') {
+		if ($field->notnull == 'No') {
 			$rules['not empty'] = 1;
 		}
 		if (in_array ($field->type, array ('int', 'integer', 'float'))) {
