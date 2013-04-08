@@ -3,7 +3,7 @@ This is a simple database manager app for the
 To install, unzip it into your apps folder, and
 you'll see "DB Manager" appear in the Tools menu.
 
-Features include:
+### Features include:
 
 * List/describe tables
 * Browse rows
@@ -14,7 +14,6 @@ Features include:
 * SQL shell with CSV export
 * jQuery UI date/time selectors
 
-To do:
+### Screenshot
 
-* Select boxes for enum fields
-* Backup database as SQL
+![DB Manager screenshot](https://github.com/jbroadway/dbman/raw/master/screenshot.png)
