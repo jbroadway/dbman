@@ -131,6 +131,8 @@ class DBMan {
 
 		if ($field->notnull == 'No') {
 			$rules['not empty'] = 1;
+		} else {
+			$rules['skip_if_empty'] = 1;
 		}
 		if (in_array ($field->type, array ('int', 'integer', 'float'))) {
 			$rules['type'] = 'numeric';
