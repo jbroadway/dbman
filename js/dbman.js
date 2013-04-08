@@ -112,6 +112,18 @@ var dbman = (function ($) {
 
 		return false;
 	};
+
+	/**
+	 * Delete the selected items.
+	 */
+	self.delete = function () {
+		if (! confirm ($.i18n ('Are you sure you want to delete these items?'))) {
+			return false;
+		}
+
+		$('#delete-form')[0].submit ();
+		return false;
+	};
 	
 	return self;
 })(jQuery);

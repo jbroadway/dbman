@@ -20,9 +20,20 @@ $sql = sprintf (
 	DBMan::primary_key ($_POST['table'])
 );
 
-if (DB::execute ($sql, $_POST['key'])) {
-	$this->add_notification (__ ('Item deleted.'));
-	$this->redirect ('/dbman/browse?table=' . $_POST['table']);
+if (is_array ($_POST['key'])) {
+	foreach ($_POST['key'] as $key) {
+		if (! DB::execute ($sql, $key)) {
+			$this->add_notification (__ ('An Error Occurred') . ': ' . DB::error ());
+			$this->redirect ('/dbman/browse?table=' . urlencode ($_POST['table']));
+		}
+	}
+	$this->add_notification (count ($_POST['key']) . ' ' . __ ('items deleted.'));
+	$this->redirect ('/dbman/browse?table=' . urlencode ($_POST['table']));
+} else {
+	if (DB::execute ($sql, $_POST['key'])) {
+		$this->add_notification (__ ('Item deleted.'));
+		$this->redirect ('/dbman/browse?table=' . urlencode ($_POST['table']));
+	}
 }
 
 $page->title = __ ('An Error Occurred');

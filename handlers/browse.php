@@ -15,6 +15,12 @@ $_GET['offset'] = ($num - 1) * $limit;
 
 $page->title = __ ('Table') . ': ' . Template::sanitize ($_GET['table']);
 
+$this->run ('admin/util/fontawesome');
+$page->add_script ('/apps/dbman/js/dbman.js');
+$page->add_script (I18n::export (
+	'Are you sure you want to delete these items?'
+));
+
 $pkey = DBMan::primary_key ($_GET['table']);
 $count = DB::shift ('select count(*) from `' . $_GET['table'] . '`');
 $res = DB::fetch ('select * from `' . $_GET['table'] . '` limit ' . $limit . ' offset ' . $_GET['offset']);
@@ -47,11 +53,13 @@ if ($count > $limit) {
 	)) . '</div>';
 }
 
+echo "<form method='post' action='/dbman/delete' id='delete-form'>\n";
+echo "<input type='hidden' name='table' value='" . Template::sanitize ($_GET['table']) . "' />\n";
 echo "<p style='clear: both'><table width='100%'><tr>\n";
 foreach ($headers as $header) {
 	printf ("<th>%s</th>\n", $header);
 }
-echo "<th>&nbsp;</th></tr>\n";
+echo "<th style='text-align: right'><a href='#' onclick='return dbman.delete ()' title='" . __ ('Delete items') . "' style='text-decoration: none'><i class='icon-remove'></i></a>&nbsp;</th></tr>\n";
 foreach ($res as $row) {
 	echo "<tr>\n";
 	foreach ((array) $row as $k => $v) {
@@ -66,17 +74,16 @@ foreach ($res as $row) {
 		}
 	}
 	printf (
-		"<td><a href='/dbman/edit?table=%s&key=%s'>%s</a> | <a href='/dbman/delete' data-table='%s' data-key='%s' onclick=\"return $.confirm_and_post (this, 'Are you sure you want to delete this item?')\">%s</a></td>\n",
+		"<td style='text-align: right'><a href='/dbman/edit?table=%s&key=%s'>%s</a> | <input type='checkbox' name='key[]' value='%s' /></td>\n",
 		Template::sanitize ($_GET['table']),
 		$row->{$pkey},
 		__ ('Edit'),
-		Template::sanitize ($_GET['table']),
-		$row->{$pkey},
-		__ ('Delete')
+		$row->{$pkey}
 	);
 	echo "</tr>\n";
 }
 echo "</table></p>\n";
+echo "</form>\n";
 
 if ($count > $limit) {
 	echo $this->run ('navigation/pager', array (
