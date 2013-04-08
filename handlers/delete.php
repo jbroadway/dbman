@@ -1,11 +1,13 @@
 <?php
 
-if (! User::require_admin ()) {
-	header ('Location: /admin');
+$this->require_admin ();
+
+if (! isset ($_POST['table'])) {
+	header ('Location: /dbman/index');
 	exit;
 }
 
-if (! isset ($_GET['table'])) {
+if (! preg_match ('/^[a-zA-Z0-9_]+$/', $_POST['table'])) {
 	header ('Location: /dbman/index');
 	exit;
 }
@@ -14,16 +16,16 @@ $page->layout = 'admin';
 
 $sql = sprintf (
 	'delete from `%s` where %s = ?',
-	$_GET['table'],
-	DBMan::primary_key ($_GET['table'])
+	$_POST['table'],
+	DBMan::primary_key ($_POST['table'])
 );
 
-if (db_execute ($sql, $_GET['key'])) {
-	$this->add_notification (i18n_get ('Item deleted.'));
-	$this->redirect ('/dbman/browse?table=' . $_GET['table']);
+if (DB::execute ($sql, $_POST['key'])) {
+	$this->add_notification (__ ('Item deleted.'));
+	$this->redirect ('/dbman/browse?table=' . $_POST['table']);
 }
 
-$page->title = i18n_get ('An Error Occurred');
-printf ("<p>%s</p>\n<p><a href='/dbman/browse?table=%s'>&laquo; %s</a></p>\n", db_error (), $_GET['table'], i18n_get ('Back'));
+$page->title = __ ('An Error Occurred');
+printf ("<p>%s</p>\n<p><a href='/dbman/browse?table=%s'>&laquo; %s</a></p>\n", DB::error (), Template::sanitize ($_POST['table']), __ ('Back'));
 
 ?>
