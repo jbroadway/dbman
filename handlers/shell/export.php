@@ -1,11 +1,8 @@
 <?php
 
-if (! User::require_admin ()) {
-	header ('Location: /admin');
-	exit;
-}
+$this->require_admin ();
 
-if (! isset ($_GET['query'])) {
+if (! isset ($_POST['query'])) {
 	header ('Location: /dbman/index');
 	exit;
 }
@@ -15,8 +12,8 @@ header ('Cache-control: private');
 header ('Content-Type: text/plain');
 header ('Content-Disposition: attachment; filename=query-export-' . gmdate ('Y-m-d') . '.csv');
 
-$res = db_fetch_array ($_GET['query']);
-echo preg_replace ('/[\r\n]+/', ' ', $_GET['query']) . "\n";
+$res = DB::fetch ($_POST['query']);
+echo preg_replace ('/[\r\n]+/', ' ', $_POST['query']) . "\n";
 if (count ($res) > 0) {
 	echo join (',', array_keys ((array) $res[0])) . "\n";
 }
