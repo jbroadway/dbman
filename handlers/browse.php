@@ -55,7 +55,7 @@ if ($count > $limit) {
 
 echo "<form method='post' action='/dbman/delete' id='delete-form'>\n";
 echo "<input type='hidden' name='table' value='" . Template::sanitize ($_GET['table']) . "' />\n";
-echo "<p style='clear: both'><table width='100%'><tr>\n";
+echo "<table width='100%' style='clear: both'><tr>\n";
 foreach ($headers as $header) {
 	printf ("<th>%s</th>\n", $header);
 }
@@ -82,7 +82,7 @@ foreach ($res as $row) {
 	);
 	echo "</tr>\n";
 }
-echo "</table></p>\n";
+echo "</table>\n";
 echo "</form>\n";
 
 if ($count > $limit) {
