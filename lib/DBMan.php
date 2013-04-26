@@ -48,7 +48,7 @@ class DBMan {
 				$res = db_fetch_array ('describe `' . $table . '`');
 				foreach ($res as $row) {
 					$type = DBMan::parse_type ($row->Type);
-					$out[] = (object) array (
+					$info = (object) array (
 						'name' => $row->Field,
 						'type' => $type['type'],
 						'length' => $type['length'],
@@ -58,6 +58,10 @@ class DBMan {
 						'extra' => $row->Extra,
 						'original' => $row
 					);
+					if ($type['type'] === 'enum') {
+						$info->values = DBMan::enum_values ($row->Type);
+					}
+					$out[] = $info;
 				}
 		}
 		return $out;
@@ -116,6 +120,14 @@ class DBMan {
 			}
 		}
 		return array ('type' => $type, 'length' => '', 'other' => '');
+	}
+
+	/**
+	 * Retrieve the values for an enum type.
+	 */
+	public static function enum_values ($type) {
+		$type = substr ($type, 6, -2);
+		return explode ("','", stripslashes ($type));
 	}
 
 	/**
