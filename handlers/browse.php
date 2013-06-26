@@ -35,10 +35,12 @@ if (count ($res) > 0) {
 }
 
 printf (
-	"<p><a href='/dbman/index'>&laquo; %s</a> | <a href='/dbman/add?table=%s'>%s</a></p>\n",
+	"<p><a href='/dbman/index'>&laquo; %s</a> | <a href='/dbman/add?table=%s'>%s</a> | <a href='/dbman/info?table=%s'>%s</a></p>\n",
 	__ ('Back'),
 	Template::sanitize ($_GET['table']),
-	__ ('Add Item')
+	__ ('Add Item'),
+	Template::sanitize ($_GET['table']),
+	__ ('Table Info')
 );
 
 echo '<p style="float: left">' . $count . ' ' . __ ('results') . ":</p>\n";

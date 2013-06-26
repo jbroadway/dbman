@@ -141,14 +141,18 @@ class DBMan {
 			return $rules;
 		}
 
-		if ($field->notnull == 'No') {
+		// ensure non-nullable fields aren't empty
+		$empty_ok = array ('char', 'varchar', 'text', 'tinytext', 'mediumtext', 'longtext', 'blob', 'tinyblob', 'mediumblob', 'longblob');
+		if ($field->notnull == 'No' && ! in_array ($field->type, $empty_ok)) {
 			$rules['not empty'] = 1;
 		} else {
 			$rules['skip_if_empty'] = 1;
 		}
+
 		if (in_array ($field->type, array ('int', 'integer', 'float'))) {
 			$rules['type'] = 'numeric';
 		}
+
 		if ($field->length != '') {
 			$rules['length'] = $field->length . '-';
 		}
