@@ -61,7 +61,7 @@ echo "<table width='100%' style='clear: both'><tr>\n";
 foreach ($headers as $header) {
 	printf ("<th>%s</th>\n", $header);
 }
-echo "<th style='text-align: right'><a href='#' onclick='return dbman.delete ()' title='" . __ ('Delete items') . "' style='text-decoration: none'><i class='icon-remove'></i></a>&nbsp;</th></tr>\n";
+echo "<th style='text-align: right'><a href='#' onclick='return dbman.delete ()' title='" . __ ('Delete items') . "' style='text-decoration: none'><i class='fa fa-times'></i></a>&nbsp;</th></tr>\n";
 foreach ($res as $row) {
 	echo "<tr>\n";
 	foreach ((array) $row as $k => $v) {
