@@ -51,7 +51,7 @@ var dbman = (function ($) {
 	 * Makes an AJAX call for the results of an SQL query.
 	 */
 	self.query = function (f) {
-		var params = {query: f.elements.query.value};
+		var params = {query: $('#query').val ()};
 		
 		$('#results').html ($.i18n ('Please wait...'));
 
