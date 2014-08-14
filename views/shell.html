@@ -2,9 +2,9 @@
 
 <p><a href="/dbman/index">&laquo; {"Back"}</a></p>
 
-<form method="post" onsubmit="return dbman.query (this)">
+<form method="post" id="shell">
 <p><textarea name="query" id="query" cols="70" rows="8">{{ query }}</textarea><br />
-<input type="submit" value="{"Execute"}" /></p>
+<input type="submit" id="submit" value="{"Execute"}" /></p>
 </form>
 
 <div id="results"></div>
@@ -14,4 +14,16 @@
 	width: 600px;
 	height: 150px;
 }
+#submit {
+	outline: none;
+}
 </style>
+
+<script>
+$(function () {
+	$('#shell').submit (function (e) {
+		e.preventDefault ();
+		dbman.query ($('#query').val ());
+	});
+});
+</script>

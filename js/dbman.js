@@ -5,7 +5,7 @@ var dbman = (function ($) {
 	 * Escape a value for output.
 	 */
 	self.esc = function (html) {
-		return html
+		return String(html)
 			.replace (/&/g, '&amp;')
 			.replace (/</g, '&lt;')
 			.replace (/>/g, '&gt;')
@@ -50,8 +50,12 @@ var dbman = (function ($) {
 	/**
 	 * Makes an AJAX call for the results of an SQL query.
 	 */
-	self.query = function (f) {
-		var params = {query: $('#query').val ()};
+	self.query = function (query) {
+		var params = {query: query};
+		console.log (params);
+		if (! query) {
+			return;
+		}
 		
 		$('#results').html ($.i18n ('Please wait...'));
 
