@@ -42,9 +42,10 @@ foreach ($import as $table => $rows) {
 			$vals = array_values ($row);
 
 			$sep = '';
-			foreach ($vals as $val) {
+			foreach ($vals as $k => $val) {
 				$sql .= $sep . '?';
 				$sep = ', ';
+				$vals[$k] = ($val === null) ? '' : $val;
 			}
 			$sql .= ')';
 		
