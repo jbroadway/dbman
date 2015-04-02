@@ -13,7 +13,13 @@ $page->layout = false;
 
 set_time_limit (0);
 
-$tables = DBMan::list_tables ();
+if (count ($_SERVER['argv']) > 2) {
+	$tables = $_SERVER['argv'];
+	array_shift ($tables);
+	array_shift ($tables);
+} else {
+	$tables = DBMan::list_tables ();
+}
 $export = array ();
 
 foreach ($tables as $table) {
