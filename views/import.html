@@ -1,0 +1,24 @@
+<p><a href="/dbman/index">&laquo; {"Back"}</a></p>
+
+<form method="post" id="{{_form}}" enctype="multipart/form-data">
+
+<p>
+	{"CSV file"}: <span class="notice" id="data-notice">{"Please upload a CSV file."}</span><br />
+	<input type="file" name="data" />
+</p>
+
+<p>
+	{"Import into table"}: <span class="notice" id="table-notice">{"Please choose a table to import into."}</span><br />
+	<select name="table">
+		<option value="">{"- select -"}</option>
+{% foreach tables as _table %}
+		<option value="{{_table}}"{% if _table == $data->table %} selected{% end %}>{{_table}}</option>
+{% end %}
+	</select>
+</p>
+
+<p>
+	<input type="submit" id="submit" value="{"Import"}" />
+</p>
+
+</form>
