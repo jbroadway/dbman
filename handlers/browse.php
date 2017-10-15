@@ -43,6 +43,8 @@ printf (
 	__ ('Table Info')
 );
 
+echo "<script>$(function () { $('.e-row').addClass ('e-row-variable').removeClass ('e-row'); });</script>\n";
+
 echo '<p style="float: left">' . $count . ' ' . __ ('results') . ":</p>\n";
 
 if ($count > $limit) {
