@@ -17,7 +17,6 @@ $page->title = i18n_get ('Add') . ' ' . $_GET['table'];
 $fields = DBMan::table_info ($_GET['table']);
 
 $f = new Form ('post');
-$f->verify_csrf = false;
 
 // generate rules for required fields
 foreach ($fields as $field) {
@@ -25,6 +24,8 @@ foreach ($fields as $field) {
 }
 
 if ($f->submit ()) {
+	unset ($_POST['_token_']);
+	
 	// add item
 	$obj = new Model ($_POST);
 	$obj->table = $_GET['table'];
