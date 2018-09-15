@@ -94,6 +94,7 @@ foreach ($fields as $field) {
 
 	switch ($field->type) {
 		case 'text':
+		case 'mediumtext':
 			printf (
 				'<p>%s:<br /><textarea name="%s" cols="60" rows="8">%s</textarea>%s</p>' . "\n",
 				$field->name,
