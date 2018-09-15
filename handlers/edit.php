@@ -36,12 +36,12 @@ if ($f->submit ()) {
 		if ($k == $pkey) {
 			continue;
 		}
-		$sql .= $sep . $k . ' = ?';
+		$sql .= $sep . '`' . $k . '` = ?';
 		$params[] = $v;
 		$sep = ', ';
 	}
 	
-	$sql .= ' where ' . $pkey . ' = ?';
+	$sql .= ' where `' . $pkey . '` = ?';
 	$params[] = $_GET['key'];
 
 	if (! db_execute ($sql, $params)) {
