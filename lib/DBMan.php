@@ -27,12 +27,15 @@ class DBMan {
 	 */
 	public static function table_info ($table) {
 		$out = array ();
+		
+		$joins = Appconf::dbman ('Joins');
+		
 		switch (DBMan::driver ()) {
 			case 'sqlite':
 				$res = db_fetch_array ('pragma table_info(' . $table . ')');
 				foreach ($res as $row) {
 					$type = DBMan::parse_type ($row->type);
-					$out[] = (object) array (
+					$info = (object) array (
 						'name' => $row->name,
 						'type' => $type['type'],
 						'length' => $type['length'],
@@ -42,8 +45,15 @@ class DBMan {
 						'extra' => '',
 						'original' => $row
 					);
+					
+					if (isset ($joins[$table][$info->name])) {
+						$info->type = 'select';
+						$info->values = DBMan::select_values ($table, $info, $row, $joins);
+					}
+					$out[] = $info;
 				}
 				break;
+
 			case 'mysql':
 				$res = db_fetch_array ('describe `' . $table . '`');
 				foreach ($res as $row) {
@@ -58,11 +68,18 @@ class DBMan {
 						'extra' => $row->Extra,
 						'original' => $row
 					);
-					if ($type['type'] === 'enum') {
+					
+					if ($info->type === 'enum') {
 						$info->values = DBMan::enum_values ($row->Type);
+					}
+					
+					if (isset ($joins[$table][$info->name])) {
+						$info->type = 'select';
+						$info->values = DBMan::select_values ($table, $info, $row, $joins);
 					}
 					$out[] = $info;
 				}
+				break;
 		}
 		return $out;
 	}
@@ -167,6 +184,32 @@ class DBMan {
 	public static function enum_values ($type) {
 		$type = substr ($type, 6, -2);
 		return explode ("','", stripslashes ($type));
+	}
+	
+	/**
+	 * Retrieve the values for a select type (fields in the [Joins] config block).
+	 */
+	public static function select_values ($table, $info, $row, $joins) {
+		$default = is_numeric ($info->default) ? (int) $info->default : $info->default;
+		$values = [];
+			
+		if (preg_match ('/^`.*`$/', $joins[$table][$info->name])) {
+			$method = substr ($joins[$table][$info->name], 1, -1);
+			$values = call_user_func ($method);
+
+		} else {
+			list ($other_table, $key_field, $value_field) = explode ('.', $joins[$table][$info->name]);
+			$values = DB::pairs ('select `' . $key_field . '`, `' . $value_field . '` from `' . $other_table . '` order by `' . $value_field . '` asc');
+		}
+		
+		if (! isset ($values[$default])) {
+			$values[$default] = __ ('- default value -');
+		}
+		
+		//info ($default, true);
+		//info ($values);
+		
+		return $values;
 	}
 
 	/**

@@ -263,6 +263,30 @@ foreach ($fields as $field) {
 				$rule
 			);
 			break;
+		case 'select':
+			printf (
+				'<p>%s:<br /><select name="%s" id="%s">' . "\n",
+				$field->name,
+				$field->name,
+				$field->name
+			);
+			if ($field->notnull === 'Yes') {
+				echo "<option value=\"\">- select -</option>\n";
+			}
+			foreach ($field->values as $value => $display) {
+				printf (
+					'<option value="%s"%s>%s (%s)</option>' . "\n",
+					$value,
+					($o->{$field->name} == $value || $field->default == $value) ? ' selected' : '',
+					$display,
+					$value
+				);
+			}
+			printf (
+				'</select>%s</p>' . "\n",
+				$rule
+			);
+			break;
 		default:
 			printf (
 				'<p>%s:<br /><input type="text" name="%s" value="%s" />%s</p>' . "\n",

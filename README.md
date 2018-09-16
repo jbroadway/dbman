@@ -15,6 +15,8 @@ To install, unzip it into your apps folder, and you'll see "DB Manager" appear i
 * Drop tables
 * jQuery UI date/time selectors
 * Command line import/export as JSON
+* Tables with up to 3-column primary keys
+* Configurable joins between tables or to PHP callbacks
 
 > Note: Command line JSON importer will clear the database table contents.
 
