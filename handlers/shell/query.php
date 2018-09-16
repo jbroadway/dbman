@@ -2,6 +2,12 @@
 
 $this->require_admin ();
 
+$f = new Form ('post', $this);
+if (! $f->verify_csrf ()) {
+	header ('Location: /admin');
+	exit;
+}
+
 $page->layout = false;
 
 header ('Content-Type: application/json');

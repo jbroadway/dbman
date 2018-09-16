@@ -10,11 +10,17 @@ if (! isset ($_GET['table'])) {
 	exit;
 }
 
+if (! preg_match ('/^[a-zA-Z0-9_]+$/', $_GET['table'])) {
+	header ('Location: /admin');
+	exit;
+}
+
 $page->layout = 'admin';
-$page->title = i18n_get ('Editing Item') . ': ' . $_GET['table'] . '/' . $_GET['key'];
+$page->title = i18n_get ('Editing Item') . ': ' . $_GET['table'] . '/' . str_replace ('|', '+', $_GET['key']);
 
 // get the field details of the table so we can dynamically generate the form
 $fields = DBMan::table_info ($_GET['table']);
+$pkey = DBMan::primary_key ($_GET['table']);
 
 $f = new Form ('post');
 
@@ -41,27 +47,68 @@ if ($f->submit ()) {
 		$sep = ', ';
 	}
 	
-	$sql .= ' where `' . $pkey . '` = ?';
-	$params[] = $_GET['key'];
+	if (is_array ($pkey)) {
+		if (count ($pkey) == 2) {
+			$sql .= ' where (`' . $pkey[0] . '` = ? and `' . $pkey[1] . '` = ?)';
+			$keys = explode ('|', $_GET['key']);
+			$params[] = $keys[0];
+			$params[] = $keys[1];
+		} elseif (count ($pkey) == 3) {
+			$sql .= ' where (`' . $pkey[0] . '` = ? and `' . $pkey[1] . '` = ? and `' . $pkey[2] . '` = ?)';
+			$keys = explode ('|', $_GET['key']);
+			$params[] = $keys[0];
+			$params[] = $keys[1];
+			$params[] = $keys[2];
+		}
+	} else {
+		$sql .= ' where `' . $pkey . '` = ?';
+		$params[] = $_GET['key'];
+	}
 
 	if (! db_execute ($sql, $params)) {
 		$page->title = i18n_get ('An Error Occurred');
 		printf ("<p>%s</p>\n<p><a href='/dbman/browse?table=%s'>&laquo; %s</a></p>\n", db_error (), $_GET['table'], i18n_get ('Back'));
 		return;
 	}
+	
 	$this->add_notification (i18n_get ('Item updated.'));
 	$this->redirect ('/dbman/browse?table=' . $_GET['table']);
 }
 
 // get the initial object from the database
-$o = db_single (
-	sprintf (
-		'select * from `%s` where %s = ?',
-		$_GET['table'],
-		DBMan::primary_key ($_GET['table'])
-	),
-	$_GET['key']
-);
+if (is_array ($pkey)) {
+	if (count ($pkey) == 2) {
+		$o = db_single (
+			sprintf (
+				'select * from `%s` where (`%s` = ? and `%s` = ?)',
+				$_GET['table'],
+				$pkey[0],
+				$pkey[1]
+			),
+			explode ('|', $_GET['key'])
+		);
+	} elseif (count ($pkey) == 3) {
+		$o = db_single (
+			sprintf (
+				'select * from `%s` where (`%s` = ? and `%s` = ? and `%s` = ?)',
+				$_GET['table'],
+				$pkey[0],
+				$pkey[1],
+				$pkey[2]
+			),
+			explode ('|', $_GET['key'])
+		);
+	}
+} else {
+	$o = db_single (
+		sprintf (
+			'select * from `%s` where %s = ?',
+			$_GET['table'],
+			DBMan::primary_key ($_GET['table'])
+		),
+		$_GET['key']
+	);
+}
 
 // generate the form
 $o = $f->merge_values ($o);

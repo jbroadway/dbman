@@ -75,21 +75,60 @@ class DBMan {
 		switch (DBMan::driver ()) {
 			case 'sqlite':
 				$res = db_fetch_array ('pragma table_info(' . $table . ')');
+				$rows = [];
+				
 				foreach ($res as $row) {
 					if ($row->pk == 1) {
-						return $row->name;
+						$rows[] = $row->name;
 					}
 				}
+				
+				if (count ($rows) == 1) {
+					return $rows[0];
+				} elseif (count ($rows) > 1) {
+					return $rows;
+				}
+				
 				break;
+				
 			case 'mysql':
 				$res = db_fetch_array ('describe `' . $table . '`');
+				$rows = [];
+				
 				foreach ($res as $row) {
 					if ($row->Key == 'PRI') {
-						return $row->Field;
+						$rows[] = $row->Field;
 					}
 				}
+				
+				if (count ($rows) == 1) {
+					return $rows[0];
+				} elseif (count ($rows) > 1) {
+					return $rows;
+				}
+				
+				break;
 		}
 		return false;
+	}
+	
+	/**
+	 * Takes the primary_key() info and a database row and returns the
+	 * primary key value for it. If it's a single-column primary key,
+	 * the value is the column value. If it's a multi-column primary key,
+	 * the values are joined by a pipe character.
+	 */
+	public static function pkey_value ($row, $pkey) {
+		if (is_array ($pkey)) {
+			$sep = '';
+			$val = '';
+			foreach ($pkey as $key) {
+				$val .= $sep . $row->{$key};
+				$sep = '|';
+			}
+			return $val;
+		}
+		return $row->{$pkey};
 	}
 
 	/**

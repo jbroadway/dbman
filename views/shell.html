@@ -4,6 +4,7 @@
 
 <form method="post" id="shell">
 <p><textarea name="query" id="query" cols="70" rows="8">{{ query }}</textarea><br />
+<input type="hidden" name="_token_" value="{{csrf_token}}" />
 <input type="submit" id="submit" value="{"Execute"}" /></p>
 </form>
 
@@ -23,7 +24,7 @@
 $(function () {
 	$('#shell').submit (function (e) {
 		e.preventDefault ();
-		dbman.query ($('#query').val ());
+		dbman.query ($('#query').val (), '{{csrf_token}}');
 	});
 });
 </script>

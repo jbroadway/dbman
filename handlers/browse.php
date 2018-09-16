@@ -4,6 +4,9 @@ $page->layout = 'admin';
 
 $this->require_admin ();
 
+$f = new Form ('get', $this);
+$csrf_token = $f->generate_csrf_token ();
+
 if (! isset ($_GET['table'])) {
 	header ('Location: /dbman/index');
 	exit;
@@ -35,11 +38,12 @@ if (count ($res) > 0) {
 }
 
 printf (
-	"<p><a href='/dbman/index'>&laquo; %s</a> | <a href='/dbman/add?table=%s'>%s</a> | <a href='/dbman/info?table=%s'>%s</a></p>\n",
+	"<p><a href='/dbman/index'>&laquo; %s</a> | <a href='/dbman/add?table=%s'>%s</a> | <a href='/dbman/info?table=%s&_token_=%s'>%s</a></p>\n",
 	__ ('Back'),
 	Template::sanitize ($_GET['table']),
 	__ ('Add Item'),
 	Template::sanitize ($_GET['table']),
+	$csrf_token,
 	__ ('Table Info')
 );
 
@@ -59,6 +63,7 @@ if ($count > $limit) {
 
 echo "<form method='post' action='/dbman/delete' id='delete-form'>\n";
 echo "<input type='hidden' name='table' value='" . Template::sanitize ($_GET['table']) . "' />\n";
+echo "<input type='hidden' name='_token_' value='" . Template::sanitize ($csrf_token) . "' />\n";
 echo "<table width='100%' style='clear: both'><tr>\n";
 foreach ($headers as $header) {
 	printf ("<th>%s</th>\n", $header);
@@ -78,11 +83,12 @@ foreach ($res as $row) {
 		}
 	}
 	printf (
-		"<td style='text-align: right'><a href='/dbman/edit?table=%s&key=%s'>%s</a> | <input type='checkbox' name='key[]' value='%s' /></td>\n",
+		"<td style='text-align: right'><a href='/dbman/edit?table=%s&key=%s&_token_=%s'>%s</a> | <input type='checkbox' name='key[]' value='%s' /></td>\n",
 		Template::sanitize ($_GET['table']),
-		$row->{$pkey},
+		DBMan::pkey_value ($row, $pkey),
+		$csrf_token,
 		__ ('Edit'),
-		$row->{$pkey}
+		DBMan::pkey_value ($row, $pkey)
 	);
 	echo "</tr>\n";
 }

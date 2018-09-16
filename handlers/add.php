@@ -29,7 +29,6 @@ if ($f->submit ()) {
 	// add item
 	$obj = new Model ($_POST);
 	$obj->table = $_GET['table'];
-	$obj->key = DBMan::primary_key ($_GET['table']);
 
 	if ($obj->put ()) {
 		$this->add_notification (i18n_get ('Item added.'));

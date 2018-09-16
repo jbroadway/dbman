@@ -2,8 +2,14 @@
 
 $this->require_admin ();
 
+$f = new Form ('post', $this);
+if (! $f->verify_csrf ()) {
+	header ('Location: /admin');
+	exit;
+}
+
 if (! isset ($_POST['query'])) {
-	header ('Location: /dbman/index');
+	header ('Location: /admin');
 	exit;
 }
 

@@ -5,8 +5,19 @@ if (! User::require_admin ()) {
 	exit;
 }
 
+$f = new Form ('get', $this);
+if (! $f->verify_csrf ()) {
+	header ('Location: /admin');
+	exit;
+}
+
 if (! isset ($_GET['table'])) {
-	header ('Location: /dbman/index');
+	header ('Location: /admin');
+	exit;
+}
+
+if (! preg_match ('/^[a-zA-Z0-9_]+$/', $_GET['table'])) {
+	header ('Location: /admin');
 	exit;
 }
 

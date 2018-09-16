@@ -50,8 +50,8 @@ var dbman = (function ($) {
 	/**
 	 * Makes an AJAX call for the results of an SQL query.
 	 */
-	self.query = function (query) {
-		var params = {query: query};
+	self.query = function (query, csrf_token) {
+		var params = {query: query, _token_: csrf_token};
 		console.log (params);
 		if (! query) {
 			return;
