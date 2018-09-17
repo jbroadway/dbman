@@ -203,7 +203,7 @@ class DBMan {
 		}
 		
 		if (! isset ($values[$default])) {
-			$values[$default] = __ ('- default value -');
+			$values = [$default => __ ('- default value -')] + $values;
 		}
 		
 		//info ($default, true);
