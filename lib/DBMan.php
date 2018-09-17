@@ -224,7 +224,7 @@ class DBMan {
 		}
 
 		// ensure non-nullable fields aren't empty
-		$empty_ok = array ('char', 'varchar', 'text', 'tinytext', 'mediumtext', 'longtext', 'blob', 'tinyblob', 'mediumblob', 'longblob');
+		$empty_ok = array ('char', 'varchar', 'text', 'tinytext', 'mediumtext', 'longtext', 'blob', 'tinyblob', 'mediumblob', 'longblob', 'select');
 		if ($field->notnull == 'No' && ! in_array ($field->type, $empty_ok)) {
 			$rules['not empty'] = 1;
 		} else {
