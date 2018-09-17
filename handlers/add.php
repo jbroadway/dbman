@@ -217,7 +217,7 @@ foreach ($fields as $field) {
 				printf (
 					'<option value="%s"%s>%s (%s)</option>' . "\n",
 					$value,
-					($o->{$field->name} == $value || $field->default == $value) ? ' selected' : '',
+					($o->{$field->name} === $value || $field->default === $value) ? ' selected' : '',
 					$display,
 					$value
 				);
