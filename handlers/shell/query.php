@@ -50,7 +50,7 @@ foreach ($queries as $query) {
 	
 	if ($cur['results'] === false) {
 		$cur['error'] = DB::error ();
-	} elseif (count ($cur['results']) > 0) {
+	} elseif (count ((array) $cur['results']) > 0) {
 		$cur['headers'] = array_keys ((array) $cur['results'][0]);
 	}
 
