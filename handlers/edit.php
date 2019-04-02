@@ -111,7 +111,7 @@ if (is_array ($pkey)) {
 }
 
 // generate the form
-$o = $f->merge_values ($o);
+$o = (object) $f->merge_values ($o);
 $o->failed = $f->failed;
 echo "<form method='post'>\n";
 
