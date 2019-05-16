@@ -74,12 +74,12 @@ foreach ($res as $row) {
 	foreach ((array) $row as $k => $v) {
 		if (strlen ($v) > 48) {
 			printf (
-				"<td title=\"%s\">%s...</td>\n",
+				"<td title=\"%s\">%s</td>\n",
 				Template::sanitize ($v),
-				Template::sanitize (substr ($v, 0, 45))
+				DBMan::linkify (Template::sanitize (substr ($v, 0, 45) . '...'), Template::sanitize ($v))
 			);
 		} else {
-			printf ("<td>%s</td>\n", Template::sanitize ($v));
+			printf ("<td>%s</td>\n", DBMan::linkify (Template::sanitize ($v)));
 		}
 	}
 	printf (

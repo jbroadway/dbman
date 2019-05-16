@@ -5,12 +5,18 @@ var dbman = (function ($) {
 	 * Escape a value for output.
 	 */
 	self.esc = function (html) {
-		return String(html)
+		var res = String(html)
 			.replace (/&/g, '&amp;')
 			.replace (/</g, '&lt;')
 			.replace (/>/g, '&gt;')
 			.replace (/"/g, '&quot;')
 			.replace (/'/g, '&#039;');
+		
+		if (res.match (/^https?:\/\//)) {
+			return '<a href="' + res + '">' + res + '</a>';
+		}
+		
+		return res;
 	};
 	
 	/**

@@ -187,6 +187,22 @@ class DBMan {
 	}
 	
 	/**
+	 * Turn a value into a link if it begins with `http://` or `https://`.
+	 * `$fullvalue` lets you pass a filtered value (e.g., abbreviated text)
+	 * while providing the full value for the link.
+	 */
+	public static function linkify ($value, $fullvalue = null) {
+		if ($fullvalue === null) {
+			$fullvalue = $value;
+		}
+		
+		if (preg_match ('/^https?:\/\//i', $value)) {
+			return '<a href="' . $fullvalue . '">' . $value . '</a>';
+		}
+		return $value;
+	}
+	
+	/**
 	 * Retrieve the values for a select type (fields in the [Joins] config block).
 	 */
 	public static function select_values ($table, $info, $row, $joins) {
