@@ -1,5 +1,7 @@
 ; <?php /*
 
+; Duplicate to conf/app.dbman.config.php and modify as follows:
+
 [Joins]
 
 ; table_name[field_name] = other_table.id_field.label_field

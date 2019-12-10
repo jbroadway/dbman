@@ -1,0 +1,51 @@
+{! admin/util/search !}
+
+<form method="get" id="search-form">
+<input type="hidden" name="table" value="{{table|quotes}}" />
+
+<div class="e-row-variable" style="margin-bottom: 20px">
+	<div class="e-col-50 e-no-padding-left">
+		<a href='/dbman/index'>&laquo; {"Back"}</a>
+		&nbsp;|&nbsp;
+		<a href='/dbman/add?table={{table|urlencode}}'>{"Add Item"}</a>
+		&nbsp;|&nbsp;
+		<a href='/dbman/info?table={{table|urlencode}}&_token_={{csrf_token|urlencode}}'>{"Table Info"}</a>
+	</div>
+	<div class="e-col-50 e-no-padding" style="text-align: right">
+		<input type="text" name="q" id="search-query" size="40" value="{{q}}" />
+		<button>{"Search"}</button>
+		{% if q != '' %}
+		<button onclick="window.location.href = '/dbman/browse?table={{table|urlencode}}'; return false">{"Clear"}</button>
+		{% end %}
+	</div>
+</div>
+
+<script>$(function () { $('.e-row').addClass ('e-row-variable').removeClass ('e-row'); });</script>
+
+<div class="e-row-variable infobar">
+	<div class="e-col-50 e-no-padding">
+		{! navigation/pager?style=results&url=[url]&total=[total]&count=[count]&limit=[limit] !}
+	</div>
+	<div class="e-col-50 e-no-padding" style="text-align: right">
+		{% if multiple_pages %}
+			{! navigation/pager
+				?style=numbers
+				&url=[url]
+				&total=[total]
+				&count=[count]
+				&limit=[limit] !}
+		{% end %}
+	</div>
+</div>
+
+</form>
+
+<script>
+$(function () {
+	$.search_init ({
+		form: '#search-form',
+		query: '#search-query',
+		links: '.search-for'
+	});
+});
+</script>

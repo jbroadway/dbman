@@ -270,6 +270,42 @@ class DBMan {
 		}
 		return false;
 	}
+	
+	/**
+	 * Extract fields to include in fuzzy search.
+	 */
+	public static function fuzzy_search_fields ($table_info) {
+		$list = [];
+		foreach ($table_info as $k => $v) {
+			switch ($v->type) {
+				case 'char':
+				case 'varchar':
+				case 'text':
+				case 'smalltext':
+				case 'mediumtext':
+				case 'longtext':
+				case 'enum':
+					$list[] = $v->name;
+			}
+		}
+		return $list;
+	}
+	
+	/**
+	 * Exstract fields to include in exact search.
+	 */
+	public static function exact_search_fields ($table_info) {
+		$list = [];
+		foreach ($table_info as $k => $v) {
+			switch ($v->type) {
+				case 'int':
+				case 'tinyint':
+				case 'smallint':
+					$list[] = $v->name;
+			}
+		}
+		return $list;
+	}
 }
 
 ?>

@@ -12,9 +12,19 @@ if (! isset ($_GET['table'])) {
 	exit;
 }
 
+$table_info = DBMan::table_info ($_GET['table']);
+
 $limit = 20;
 $num = (isset ($_GET['num'])) ? $_GET['num'] : 1;
 $_GET['offset'] = ($num - 1) * $limit;
+$q = isset ($_GET['q']) ? $_GET['q'] : ''; // search query
+$q_fields = DBMan::fuzzy_search_fields ($table_info);
+$q_exact = DBMan::exact_search_fields ($table_info);
+
+// Build the search query from Model
+$where = Model::query ()->where_search ($q, $q_fields, $q_exact);
+$query_clause = join ('', $where->query_filters);
+$query_params = $where->query_params;
 
 $page->title = __ ('Table') . ': ' . Template::sanitize ($_GET['table']);
 
@@ -25,8 +35,14 @@ $page->add_script (I18n::export (
 ));
 
 $pkey = DBMan::primary_key ($_GET['table']);
-$count = DB::shift ('select count(*) from `' . $_GET['table'] . '`');
-$res = DB::fetch ('select * from `' . $_GET['table'] . '` limit ' . $limit . ' offset ' . $_GET['offset']);
+
+if (count ($query_params) > 0) {
+	$count = DB::shift ('select count(*) from `' . $_GET['table'] . '` where ' . $query_clause, $query_params);
+	$res = DB::fetch ('select * from `' . $_GET['table'] . '` where ' . $query_clause . ' limit ' . $limit . ' offset ' . $_GET['offset'], $query_params);
+} else {
+	$count = DB::shift ('select count(*) from `' . $_GET['table'] . '`');
+	$res = DB::fetch ('select * from `' . $_GET['table'] . '` limit ' . $limit . ' offset ' . $_GET['offset']);
+}
 $more = ($count > $_GET['offset'] + $limit);
 $prev = $_GET['offset'] - $limit;
 $next = $_GET['offset'] + $limit;
@@ -37,29 +53,16 @@ if (count ($res) > 0) {
 	$headers = array ();
 }
 
-printf (
-	"<p><a href='/dbman/index'>&laquo; %s</a> | <a href='/dbman/add?table=%s'>%s</a> | <a href='/dbman/info?table=%s&_token_=%s'>%s</a></p>\n",
-	__ ('Back'),
-	Template::sanitize ($_GET['table']),
-	__ ('Add Item'),
-	Template::sanitize ($_GET['table']),
-	$csrf_token,
-	__ ('Table Info')
-);
-
-echo "<script>$(function () { $('.e-row').addClass ('e-row-variable').removeClass ('e-row'); });</script>\n";
-
-echo '<p style="float: left">' . $count . ' ' . __ ('results') . ":</p>\n";
-
-if ($count > $limit) {
-	echo '<div style="float: right">' . $this->run ('navigation/pager', array (
-		'style' => 'numbers',
-		'url' => '/dbman/browse?table=' . $_GET['table'] . '&num=%d',
-		'total' => $count,
-		'count' => count ($res),
-		'limit' => $limit
-	)) . '</div>';
-}
+echo $tpl->render ('dbman/browse_header', [
+	'table' => $_GET['table'],
+	'csrf_token' => $csrf_token,
+	'total' => $count,
+	'count' => count ($res),
+	'limit' => $limit,
+	'multiple_pages' => ($count > $limit),
+	'q' => $_GET['q'],
+	'url' => '/dbman/browse?table=' . urlencode ($_GET['table']) . '&q=' . urlencode ($q) . '&num=%d'
+]);
 
 echo "<form method='post' action='/dbman/delete' id='delete-form'>\n";
 echo "<input type='hidden' name='table' value='" . Template::sanitize ($_GET['table']) . "' />\n";
