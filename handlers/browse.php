@@ -53,6 +53,8 @@ if (count ($res) > 0) {
 	$headers = array ();
 }
 
+$url = '/dbman/browse?table=' . urlencode ($_GET['table']) . '&q=' . urlencode ($q) . '&num=%d';
+
 echo $tpl->render ('dbman/browse_header', [
 	'table' => $_GET['table'],
 	'csrf_token' => $csrf_token,
@@ -61,7 +63,7 @@ echo $tpl->render ('dbman/browse_header', [
 	'limit' => $limit,
 	'multiple_pages' => ($count > $limit),
 	'q' => $_GET['q'],
-	'url' => '/dbman/browse?table=' . urlencode ($_GET['table']) . '&q=' . urlencode ($q) . '&num=%d'
+	'url' => $url
 ]);
 
 echo "<form method='post' action='/dbman/delete' id='delete-form'>\n";
@@ -101,7 +103,7 @@ echo "</form>\n";
 if ($count > $limit) {
 	echo $this->run ('navigation/pager', array (
 		'style' => 'numbers',
-		'url' => '/dbman/browse?table=' . urlencode ($_GET['table']) . '&num=%d',
+		'url' => $url,
 		'total' => $count,
 		'count' => count ($res),
 		'limit' => $limit
