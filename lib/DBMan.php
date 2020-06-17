@@ -63,7 +63,7 @@ class DBMan {
 						'type' => $type['type'],
 						'length' => $type['length'],
 						'notnull' => ($row->Null == 'NO') ? 'No' : 'Yes',
-						'key' => ($row->Key == 'PRI') ? 'Primary' : (! empty ($row->Key)) ? 'Secondary' : '',
+						'key' => ($row->Key == 'PRI') ? 'Primary' : ((! empty ($row->Key)) ? 'Secondary' : ''),
 						'default' => $row->Default,
 						'extra' => $row->Extra,
 						'original' => $row
