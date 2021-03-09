@@ -4,6 +4,11 @@ $page->layout = 'admin';
 
 $this->require_admin ();
 
+if (! DBMan::feature ('import')) {
+	$this->add_notification (__ ('Import has been disabled.'));
+	$this->redirect ('/dbman/index');
+}
+
 $page->title = __ ('Import CSV Data');
 
 $form = new Form ('post', $this);

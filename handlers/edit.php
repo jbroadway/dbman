@@ -5,6 +5,11 @@ if (! User::require_admin ()) {
 	exit;
 }
 
+if (! DBMan::feature ('edit')) {
+	$this->add_notification (__ ('Edit has been disabled.'));
+	$this->redirect ('/dbman/index');
+}
+
 if (! isset ($_GET['table'])) {
 	header ('Location: /dbman/index');
 	exit;

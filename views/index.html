@@ -1,7 +1,7 @@
 <p>
-	<a href="/dbman/shell">{"SQL Shell"}</a>
-	&nbsp;|&nbsp;
-	<a href="/dbman/import">{"CSV Importer"}</a>
+	{% if DBMan::feature ('shell') %}<a href="/dbman/shell">{"SQL Shell"}</a>{% end %}
+	{% if DBMan::feature ('shell', 'import') %}&nbsp;|&nbsp;{% end %}
+	{% if DBMan::feature ('import') %}<a href="/dbman/import">{"CSV Importer"}</a>{% end %}
 </p>
 
 <p>
@@ -15,7 +15,7 @@
 	<tr>
 		<td><a href="/dbman/browse?table={{ loop_value }}">{{ loop_value }}</a></td>
 		<td style="text-align: right">{{ loop_value|DBMan::count }}</td>
-		<td style="text-align: right"><a href="/dbman/info?table={{ loop_value }}&_token_={{csrf_token}}">{"Info"}</a> | <a href="/dbman/export?table={{ loop_value }}&_token_={{csrf_token}}">{"Export"}</a> | <a href="/dbman/drop?table={{ loop_value }}&_token_={{csrf_token}}" onclick="return confirm ('{"Are you sure you want to permanently erase this table?"}');">{"Drop"}</a></td>
+		<td style="text-align: right"><a href="/dbman/info?table={{ loop_value }}&_token_={{csrf_token}}">{"Info"}</a>{% if DBMan::feature ('export') %} | <a href="/dbman/export?table={{ loop_value }}&_token_={{csrf_token}}">{"Export"}</a>{% end %}{% if DBMan::feature ('drop') %} | <a href="/dbman/drop?table={{ loop_value }}&_token_={{csrf_token}}" onclick="return confirm ('{"Are you sure you want to permanently erase this table?"}');">{"Drop"}</a>{% end %}</td>
 	</tr>
 {% end %}
 </table>

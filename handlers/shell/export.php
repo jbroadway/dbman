@@ -2,8 +2,18 @@
 
 $this->require_admin ();
 
+if (! DBMan::feature ('shell')) {
+	$this->add_notification (__ ('Shell has been disabled.'));
+	$this->redirect ('/dbman/index');
+}
+
+if (! DBMan::feature ('export')) {
+	$this->add_notification (__ ('Export has been disabled.'));
+	$this->redirect ('/dbman/index');
+}
+
 $f = new Form ('post', $this);
-if (! $f->verify_csrf ()) {
+if (! $f->verify_csrf ('/dbman/shell')) {
 	header ('Location: /admin');
 	exit;
 }

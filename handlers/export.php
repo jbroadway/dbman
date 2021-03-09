@@ -1,12 +1,16 @@
 <?php
 
 if (! User::require_admin ()) {
-	header ('Location: /admin');
-	exit;
+	$this->redirect ('/admin');
+}
+
+if (! DBMan::feature ('export')) {
+	$this->add_notification (__ ('Export has been disabled.'));
+	$this->redirect ('/dbman/index');
 }
 
 $f = new Form ('get', $this);
-if (! $f->verify_csrf ()) {
+if (! $f->verify_csrf ('/dbman')) {
 	header ('Location: /admin');
 	exit;
 }

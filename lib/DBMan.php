@@ -306,6 +306,25 @@ class DBMan {
 		}
 		return $list;
 	}
+	
+	/**
+	 * Returns true or false to determine whether a feature or list of features
+	 * should be enabled or disabled. Accepts one or more arguments which
+	 * represent the list of features, e.g.:
+	 *
+	 *     if (DBMan::feature ('shell', 'import')) {
+	 *         // shell and import are enabled
+	 *     }
+	 */
+	public static function feature () {
+		$names = func_get_args ();
+		foreach ($names as $name) {
+			if (! Appconf::dbman ('Features', $name)) {
+				return false;
+			}
+		}
+		return true;
+	}
 }
 
 ?>

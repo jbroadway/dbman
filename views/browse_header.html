@@ -6,8 +6,8 @@
 <div class="e-row-variable" style="margin-bottom: 20px">
 	<div class="e-col-50 e-no-padding-left">
 		<a href='/dbman/index'>&laquo; {"Back"}</a>
-		&nbsp;|&nbsp;
-		<a href='/dbman/add?table={{table|urlencode}}'>{"Add Item"}</a>
+		{% if DBMan::feature ('add') %}&nbsp;|&nbsp;
+		<a href='/dbman/add?table={{table|urlencode}}'>{"Add Item"}</a>{% end %}
 		&nbsp;|&nbsp;
 		<a href='/dbman/info?table={{table|urlencode}}&_token_={{csrf_token|urlencode}}'>{"Table Info"}</a>
 	</div>

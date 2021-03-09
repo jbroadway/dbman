@@ -1,0 +1,3 @@
+<td style='text-align: right'>{% if DBMan::feature ('edit') %}<a href='/dbman/edit?table={{table}}&key={{pkey}}&_token_={{tok}}'>{"Edit"}</a>{% end %}
+{% if DBMan::feature ('edit', 'delete') %} | {% end %}
+{% if DBMan::feature ('delete') %}<input type='checkbox' name='key[]' value='{{pkey}}' />{% end %}</td>

@@ -2,8 +2,13 @@
 
 $this->require_admin ();
 
+if (! DBMan::feature ('delete')) {
+	$this->add_notification (__ ('Delete has been disabled.'));
+	$this->redirect ('/dbman/index');
+}
+
 $f = new Form ('post', $this);
-if (! $f->verify_csrf ()) {
+if (! $f->verify_csrf ('/dbman')) {
 	header ('Location: /admin');
 	exit;
 }

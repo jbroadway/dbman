@@ -5,7 +5,7 @@ $page->layout = 'admin';
 $this->require_admin ();
 
 $f = new Form ('get', $this);
-$csrf_token = $f->generate_csrf_token ();
+$csrf_token = $f->generate_csrf_token (false, '/dbman');
 
 if (! isset ($_GET['table'])) {
 	header ('Location: /dbman/index');
@@ -73,7 +73,13 @@ echo "<table width='100%' style='clear: both'><tr>\n";
 foreach ($headers as $header) {
 	printf ("<th>%s</th>\n", $header);
 }
-echo "<th style='text-align: right'><a href='#' onclick='return dbman.delete ()' title='" . __ ('Delete items') . "' style='text-decoration: none'><i class='fa fa-times'></i></a>&nbsp;</th></tr>\n";
+
+if (DBMan::feature ('delete')) {
+	echo "<th style='text-align: right'><a href='#' onclick='return dbman.delete ()' title='" . __ ('Delete items') . "' style='text-decoration: none'><i class='fa fa-times'></i></a>&nbsp;</th></tr>\n";
+} else {
+	echo "<th>&nbsp;</th></tr>\n";
+}
+
 foreach ($res as $row) {
 	echo "<tr>\n";
 	foreach ((array) $row as $k => $v) {
@@ -87,14 +93,11 @@ foreach ($res as $row) {
 			printf ("<td>%s</td>\n", DBMan::linkify (Template::sanitize ($v)));
 		}
 	}
-	printf (
-		"<td style='text-align: right'><a href='/dbman/edit?table=%s&key=%s&_token_=%s'>%s</a> | <input type='checkbox' name='key[]' value='%s' /></td>\n",
-		Template::sanitize ($_GET['table']),
-		DBMan::pkey_value ($row, $pkey),
-		$csrf_token,
-		__ ('Edit'),
-		DBMan::pkey_value ($row, $pkey)
-	);
+	echo $tpl->render ('dbman/rowoptions', [
+		'table' => $_GET['table'],
+		'pkey' => DBMan::pkey_value ($row, $pkey),
+		'tok' => $csrf_token
+	]);
 	echo "</tr>\n";
 }
 echo "</table>\n";

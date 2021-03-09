@@ -2,20 +2,31 @@
 
 $this->require_admin ();
 
-$f = new Form ('post', $this);
-if (! $f->verify_csrf ()) {
-	header ('Location: /admin');
-	exit;
-}
-
 $page->layout = false;
 
 header ('Content-Type: application/json');
 
+if (! DBMan::feature ('shell')) {
+	echo json_encode ([
+		'success' => false,
+		'error' => __ ('Shell has been disabled.')
+	]);
+	return;
+}
+
+$f = new Form ('post', $this);
+if (! $f->verify_csrf ()) {
+	echo json_encode ([
+		'success' => false,
+		'error' => __ ('Request validation failed.')
+	]);
+	return;
+}
+
 if (! isset ($_POST['query']) || empty ($_POST['query'])) {
 	echo json_encode (array (
 		'success' => false,
-		'error' => __ ('No query specified')
+		'error' => __ ('No query specified.')
 	));
 	return;
 }

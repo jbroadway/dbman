@@ -8,7 +8,7 @@ if (! User::require_admin ()) {
 }
 
 $f = new Form ('get', $this);
-$csrf_token = $f->generate_csrf_token ();
+$csrf_token = $f->generate_csrf_token (false, '/dbman');
 
 $page->title = 'DB Manager';
 

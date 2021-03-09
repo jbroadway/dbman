@@ -4,8 +4,13 @@ $page->layout = 'admin';
 
 $this->require_admin ();
 
+if (! DBMan::feature ('shell')) {
+	$this->add_notification (__ ('Shell has been disabled.'));
+	$this->redirect ('/dbman/index');
+}
+
 $f = new Form ('post', $this);
-$csrf_token = $f->generate_csrf_token ();
+$csrf_token = $f->generate_csrf_token (false, '/dbman/shell/query');
 
 
 $page->title = __ ('SQL Shell');

@@ -7,8 +7,13 @@ if (! User::require_admin ()) {
 	exit;
 }
 
+if (! DBMan::feature ('drop')) {
+	$this->add_notification (__ ('Drop has been disabled.'));
+	$this->redirect ('/dbman/index');
+}
+
 $f = new Form ('get', $this);
-if (! $f->verify_csrf ()) {
+if (! $f->verify_csrf ('/dbman')) {
 	header ('Location: /admin');
 	exit;
 }

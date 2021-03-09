@@ -8,7 +8,7 @@ if (! User::require_admin ()) {
 }
 
 $f = new Form ('get', $this);
-if (! $f->verify_csrf ()) {
+if (! $f->verify_csrf ('/dbman')) {
 	header ('Location: /admin');
 	exit;
 }
