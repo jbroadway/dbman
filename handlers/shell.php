@@ -15,7 +15,7 @@ $csrf_token = $f->generate_csrf_token (false, '/dbman/shell/query');
 
 $page->title = __ ('SQL Shell');
 
-$page->add_script ('/apps/dbman/js/dbman.js?v=3');
+$page->add_script ('/apps/dbman/js/dbman.js?v=4');
 $page->add_script (I18n::export (
 	'Error',
 	'Query executed.',
