@@ -66,8 +66,9 @@ var dbman = (function ($) {
 		$('#results').html ($.i18n ('Please wait...'));
 
 		$.post ('/dbman/shell/query', params, function (res) {
+			console.log (res);
 			if (! res.success) {
-				$.add_notification (res.error);
+				$('#results').html (res.error);
 				return;
 			}
 			
