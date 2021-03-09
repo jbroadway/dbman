@@ -16,6 +16,7 @@ drop = On
 shell = On
 export = On
 import = On
+schema = On
 
 [Admin]
 

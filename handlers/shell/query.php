@@ -40,8 +40,53 @@ foreach ($queries as $query) {
 		continue;
 	}
 
-	$exec = preg_match ('/^(alter|create|insert|update|delete|drop) /i', $query);
+	$exec = preg_match ('/^(alter|create|insert|update|delete|drop) /i', $query, $matches);
 	if ($exec) {
+		// Verify associated feature is enabled
+		$feature = false;
+
+		switch ($matches[1]) {
+			case 'insert':
+				if (! DBMan::feature ('add')) {
+					$feature = __ ('Add has been disabled.');
+				}
+				break;
+
+			case 'update':
+				if (! DBMan::feature ('edit')) {
+					$feature = __ ('Edit has been disabled.');
+				}
+				break;
+
+			case 'delete':
+				if (! DBMan::feature ('delete')) {
+					$feature = __ ('Delete has been disabled.');
+				}
+				break;
+
+			case 'drop':
+				if (! DBMan::feature ('drop')) {
+					$feature = __ ('Drop has been disabled.');
+				}
+				break;
+
+			case 'alter':
+			case 'create':
+				if (! DBMan::feature ('schema')) {
+					$feature = __ ('Schema changes have been disabled.');
+				}
+				break;
+		}
+		
+		if ($feature !== false) {
+			echo json_encode ([
+				'success' => false,
+				'error' => $feature
+			]);
+			return;
+		}
+		
+		// Execute command
 		$cur = array (
 			'sql' => Template::sanitize ($query),
 			'headers' => array (),
@@ -50,6 +95,7 @@ foreach ($queries as $query) {
 			'exec' => $exec
 		);
 	} else {
+		// Fetch results
 		$cur = array (
 			'sql' => Template::sanitize ($query),
 			'headers' => array (),
