@@ -58,50 +58,53 @@ $url = '/dbman/browse?table=' . urlencode ($_GET['table']) . '&q=' . urlencode (
 echo $tpl->render ('dbman/browse_header', [
 	'table' => $_GET['table'],
 	'csrf_token' => $csrf_token,
-	'total' => $count,
-	'count' => count ($res),
+	'total' => is_int ($count) ? $count : 0,
+	'count' => is_array ($res) ? count ($res) : 0,
 	'limit' => $limit,
 	'multiple_pages' => ($count > $limit),
 	'q' => $_GET['q'],
 	'url' => $url
 ]);
 
-echo "<form method='post' action='/dbman/delete' id='delete-form'>\n";
-echo "<input type='hidden' name='table' value='" . Template::sanitize ($_GET['table']) . "' />\n";
-echo "<input type='hidden' name='_token_' value='" . Template::sanitize ($csrf_token) . "' />\n";
-echo "<table width='100%' style='clear: both'><tr>\n";
-foreach ($headers as $header) {
-	printf ("<th>%s</th>\n", $header);
-}
-
-if (DBMan::feature ('delete')) {
-	echo "<th style='text-align: right'><a href='#' onclick='return dbman.delete ()' title='" . __ ('Delete items') . "' style='text-decoration: none'><i class='fa fa-times'></i></a>&nbsp;</th></tr>\n";
-} else {
-	echo "<th>&nbsp;</th></tr>\n";
-}
-
-foreach ($res as $row) {
-	echo "<tr>\n";
-	foreach ((array) $row as $k => $v) {
-		if (strlen ($v) > 48) {
-			printf (
-				"<td title=\"%s\">%s</td>\n",
-				Template::sanitize ($v),
-				DBMan::linkify (Template::sanitize (substr ($v, 0, 45) . '...'), Template::sanitize ($v))
-			);
-		} else {
-			printf ("<td>%s</td>\n", DBMan::linkify (Template::sanitize ($v)));
-		}
+if (is_array ($res)) {
+	echo "<form method='post' action='/dbman/delete' id='delete-form'>\n";
+	echo "<input type='hidden' name='table' value='" . Template::sanitize ($_GET['table']) . "' />\n";
+	echo "<input type='hidden' name='_token_' value='" . Template::sanitize ($csrf_token) . "' />\n";
+	echo "<table width='100%' style='clear: both'><tr>\n";
+	foreach ($headers as $header) {
+		printf ("<th>%s</th>\n", $header);
 	}
-	echo $tpl->render ('dbman/rowoptions', [
-		'table' => $_GET['table'],
-		'pkey' => DBMan::pkey_value ($row, $pkey),
-		'tok' => $csrf_token
-	]);
-	echo "</tr>\n";
+
+	if (DBMan::feature ('delete')) {
+		echo "<th style='text-align: right'><a href='#' onclick='return dbman.delete ()' title='" . __ ('Delete items') . "' style='text-decoration: none'><i class='fa fa-times'></i></a>&nbsp;</th></tr>\n";
+	} else {
+		echo "<th>&nbsp;</th></tr>\n";
+	}
+
+	foreach ($res as $row) {
+		echo "<tr>\n";
+		foreach ((array) $row as $k => $v) {
+			if (strlen ($v) > 48) {
+				printf (
+					"<td title=\"%s\">%s</td>\n",
+					Template::sanitize ($v),
+					DBMan::linkify (Template::sanitize (substr ($v, 0, 45) . '...'), Template::sanitize ($v))
+				);
+			} else {
+				printf ("<td>%s</td>\n", DBMan::linkify (Template::sanitize ($v)));
+			}
+		}
+		echo $tpl->render ('dbman/rowoptions', [
+			'table' => $_GET['table'],
+			'pkey' => DBMan::pkey_value ($row, $pkey),
+			'tok' => $csrf_token
+		]);
+		echo "</tr>\n";
+	}
+
+	echo "</table>\n";
+	echo "</form>\n";
 }
-echo "</table>\n";
-echo "</form>\n";
 
 if ($count > $limit) {
 	echo $this->run ('navigation/pager', array (
