@@ -47,7 +47,7 @@ $more = ($count > $_GET['offset'] + $limit);
 $prev = $_GET['offset'] - $limit;
 $next = $_GET['offset'] + $limit;
 
-if (count ($res) > 0) {
+if (is_array ($res) && count ($res) > 0) {
 	$headers = array_keys ((array) $res[0]);
 } else {
 	$headers = array ();
