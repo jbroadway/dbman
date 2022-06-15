@@ -301,6 +301,9 @@ class DBMan {
 				case 'int':
 				case 'tinyint':
 				case 'smallint':
+				case 'int unsigned':
+				case 'tinyint unsigned':
+				case 'smallint unsigned':
 					$list[] = $v->name;
 			}
 		}
