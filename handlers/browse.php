@@ -37,10 +37,10 @@ $page->add_script (I18n::export (
 $pkey = DBMan::primary_key ($_GET['table']);
 
 if (count ($query_params) > 0) {
-	$count = DB::shift ('select count(*) from `' . $_GET['table'] . '` where ' . $query_clause, $query_params);
+	$total = DB::shift ('select count(*) from `' . $_GET['table'] . '` where ' . $query_clause, $query_params);
 	$res = DB::fetch ('select * from `' . $_GET['table'] . '` where ' . $query_clause . ' limit ' . $limit . ' offset ' . $_GET['offset'], $query_params);
 } else {
-	$count = DB::shift ('select count(*) from `' . $_GET['table'] . '`');
+	$total = DB::shift ('select count(*) from `' . $_GET['table'] . '`');
 	$res = DB::fetch ('select * from `' . $_GET['table'] . '` limit ' . $limit . ' offset ' . $_GET['offset']);
 }
 $more = ($count > $_GET['offset'] + $limit);
@@ -55,16 +55,21 @@ if (is_array ($res) && count ($res) > 0) {
 
 $url = '/dbman/browse?table=' . urlencode ($_GET['table']) . '&q=' . urlencode ($q) . '&num=%d';
 
+$total = is_numeric ($total) ? $total : 0;
+$count = is_array ($res) ? count ($res) : 0;
+
 echo $tpl->render ('dbman/browse_header', [
 	'table' => $_GET['table'],
 	'csrf_token' => $csrf_token,
-	'total' => is_int ($count) ? $count : 0,
-	'count' => is_array ($res) ? count ($res) : 0,
+	'total' => $total,
+	'count' => $count,
 	'limit' => $limit,
-	'multiple_pages' => ($count > $limit),
+	'multiple_pages' => ($total > $limit) ? true : false,
 	'q' => $_GET['q'],
 	'url' => $url
 ]);
+
+
 
 if (is_array ($res)) {
 	echo "<form method='post' action='/dbman/delete' id='delete-form'>\n";
@@ -106,12 +111,12 @@ if (is_array ($res)) {
 	echo "</form>\n";
 }
 
-if ($count > $limit) {
+if ($total > $limit) {
 	echo $this->run ('navigation/pager', array (
 		'style' => 'numbers',
 		'url' => $url,
-		'total' => $count,
-		'count' => count ($res),
+		'total' => $total,
+		'count' => $count,
 		'limit' => $limit
 	));
 }
