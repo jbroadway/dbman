@@ -47,7 +47,12 @@ var dbman = (function ($) {
 				.attr ('value', value)
 				.appendTo ($form);
 		});
-	
+
+		$('<input type="hidden">')
+			.attr ('name', '_token_')
+			.attr ('value', $('#csrf-token').val ())
+			.appendTo ($form);
+
 		$form.appendTo ('body');
 		$form.submit ();
 		return false;

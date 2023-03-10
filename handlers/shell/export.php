@@ -13,7 +13,7 @@ if (! DBMan::feature ('export')) {
 }
 
 $f = new Form ('post', $this);
-if (! $f->verify_csrf ('/dbman/shell')) {
+if (! $f->verify_csrf ('/dbman/shell/query')) {
 	header ('Location: /admin');
 	exit;
 }
@@ -28,8 +28,15 @@ header ('Cache-control: private');
 header ('Content-Type: text/plain');
 header ('Content-Disposition: attachment; filename=query-export-' . gmdate ('Y-m-d') . '.csv');
 
-$res = DB::fetch ($_POST['query']);
-echo preg_replace ('/[\r\n]+/', ' ', $_POST['query']) . "\n";
+$query = html_entity_decode ($_POST['query'], ENT_QUOTES);
+
+$res = DB::fetch ($query);
+echo '"' . str_replace ('"', '""', preg_replace ('/[\r\n]+/', ' ', $query)) . "\"\n";
+if ($res === false) {
+	echo DB::error () . "\n";
+	return;
+}
+
 if (count ($res) > 0) {
 	echo join (',', array_keys ((array) $res[0])) . "\n";
 }
