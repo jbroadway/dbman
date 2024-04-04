@@ -20,7 +20,10 @@ schema = On
 
 [Admin]
 
-handler = dbman/index
 name = DB Manager
+version = 1.0.2
+handler = dbman/index
+install = dbman/install
+upgrade = dbman/upgrade
 
 ; */ ?>
