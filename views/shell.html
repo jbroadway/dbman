@@ -3,9 +3,14 @@
 <p><a href="/dbman/index">&laquo; {"Back"}</a></p>
 
 <form method="post" id="shell">
-<p><textarea name="query" id="query" cols="70" rows="8">{{ query }}</textarea><br />
-<input type="hidden" name="_token_" id="csrf-token" value="{{csrf_token}}" />
-<input type="submit" id="submit" value="{"Execute"}" /></p>
+	<p><textarea name="query" id="query" cols="70" rows="8">{{ query }}</textarea><br />
+	<input type="hidden" name="_token_" id="csrf-token" value="{{csrf_token}}" />
+	<select id="queries" onchange="dbman.select_saved_query ()"></select></p>
+	<p>
+		<input type="submit" id="submit" value="{"Execute"}" />
+		&nbsp;
+		<a href="/dbman/browse?table=elefant_dbman_saved_query" target="_blank">{"Manage Saved Queries"}</a>
+	</p>
 </form>
 
 <div id="results"></div>
@@ -18,13 +23,19 @@
 #submit {
 	outline: none;
 }
+#queries {
+	max-width: 600px;
+}
 </style>
 
 <script>
 $(function () {
+	dbman.set_tokens ('{{csrf_token}}', '{{save_token}}');
+	dbman.init_saved_queries ({{saved_queries|json_encode}});
+
 	$('#shell').submit (function (e) {
 		e.preventDefault ();
-		dbman.query ($('#query').val (), '{{csrf_token}}');
+		dbman.query ($('#query').val ());
 	});
 });
 </script>

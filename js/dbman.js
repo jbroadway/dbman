@@ -1,6 +1,70 @@
 var dbman = (function ($) {
 	var self = {};
+
+	self.csrf_token = '';
+	self.save_token = '';
+	self.saved_queries = [];
+
+	/**
+	 * Set the CSRF tokens upon initialization.
+	 */
+	self.set_tokens = function (query, save) {
+		self.csrf_token = query;
+		self.save_token = save;
+	}
+
+	self.init_saved_queries = function (queries) {
+		self.saved_queries = queries;
+		self.update_query_list ();
+	}
+
+	self.add_saved_query = function (res) {
+		self.saved_queries.append (res);
+		self.update_query_list ();
+	}
+
+	self.update_query_list = function () {
+		var $select = $('#queries'),
+			escape = document.createElement ('textarea');
+
+		$select.empty ();
+
+		$select.append ($('<option>', {
+			value: '',
+			text: $.i18n ('- Saved Queries -')
+		}));
+
+		// Add options
+		for (i = 0; i < self.saved_queries.length; i++) {
+			var query = self.saved_queries[i];
+
+			escape.innerHTML = query.query;
+
+			$select.append ($('<option>', {
+				value: i,
+				text: query.title + ' (' + escape.textContent + ')'
+			}));
+		}
+	}
 	
+	self.select_saved_query = function () {
+		var $query = $('#query'),
+			index = $('#queries').find (':selected').val ();
+		
+		if (index == '') {
+			return;
+		}
+
+		var res = self.saved_queries[index],
+			val = $.codemirror['query'].getValue ();
+
+		if (val == '') {
+			$.codemirror['query'].setValue ('-- ' + res.title + "\n" + res.query);
+		} else {
+			$.codemirror['query'].setValue (val + ";\n\n-- " + res.title + "\n" + res.query);
+		}
+	};
+
 	/**
 	 * Escape a value for output.
 	 */
@@ -57,16 +121,53 @@ var dbman = (function ($) {
 		$form.submit ();
 		return false;
 	};
+
+	/**
+	 * Save a query to the saved queries list. Usage:
+	 *
+	 *     <a href="/dbman/shell/save"
+	 *        data-query="{{query}}"
+	 *        onclick="return dbman.save (this)"
+	 *     >{"Save query"}</a>
+	 */
+	self.save = function (el) {
+		if (window.event) {
+			window.event.preventDefault ();
+		}
+
+		var title = prompt ('Query name', '');
+		
+		if (title == null || title == '') {
+			return false; // Cancelled request
+		}
+
+		var $el = $(el),
+			query = $el.data ('query');
+
+		var params = {query: query, title: title, _token_: self.save_token};
+		
+		$.post ('/dbman/shell/save', params, function (res) {
+			console.log (res);
+			if (! res.success) {
+				$('#results').html (res.error);
+				return;
+			}
+
+			self.add_saved_query (res.data);
+		});
+
+		return false;
+	};
 	
 	/**
 	 * Makes an AJAX call for the results of an SQL query.
 	 */
-	self.query = function (query, csrf_token) {
-		var params = {query: query, _token_: csrf_token};
-		console.log (params);
+	self.query = function (query) {
 		if (! query) {
 			return;
 		}
+
+		var params = {query: query, _token_: self.csrf_token};
 		
 		$('#results').html ($.i18n ('Please wait...'));
 
@@ -101,6 +202,9 @@ var dbman = (function ($) {
 						res.data[q].results.length + ' ' + $.i18n ('results') + ' (' +
 						'<a href="/dbman/shell/export" data-query="' + dbman.esc (res.data[q].sql) + '" ' +
 							'onclick="return dbman.post (this)">' + $.i18n ('Export') +
+						'</a>, ' +
+						'<a href="/dbman/shell/save" data-query="' + dbman.esc (res.data[q].sql) + '" ' +
+							'onclick="return dbman.save (this)">' + $.i18n ('Save Query') +
 						'</a>):' +
 					'</p>'
 				);

@@ -10,12 +10,14 @@ if (! DBMan::feature ('shell')) {
 }
 
 $f = new Form ('post', $this);
-$csrf_token = $f->generate_csrf_token (false, '/dbman/shell/query');
 
+$csrf_token = $f->generate_csrf_token (false, '/dbman/shell/query');
+$save_token = $f->generate_csrf_token (false, '/dbman/shell/save');
 
 $page->title = __ ('SQL Shell');
 
 $page->add_script ('/apps/dbman/js/dbman.js?v=4');
+
 $page->add_script (I18n::export (
 	'Error',
 	'Query executed.',
@@ -23,6 +25,17 @@ $page->add_script (I18n::export (
 	'results',
 	'Export'
 ));
-echo $tpl->render ('dbman/shell', array ('query' => $_POST['query'], 'csrf_token' => $csrf_token));
+
+echo $tpl->render (
+	'dbman/shell', 
+	array (
+		'query' => $_POST['query'],
+		'csrf_token' => $csrf_token,
+		'save_token' => $save_token,
+		'saved_queries' => dbman\SavedQuery::query ()
+			->order ('title', 'asc')
+			->fetch_orig ()
+	)
+);
 
 ?>
