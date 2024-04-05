@@ -19,7 +19,7 @@ var dbman = (function ($) {
 	}
 
 	self.add_saved_query = function (res) {
-		self.saved_queries.append (res);
+		self.saved_queries.push (res);
 		self.update_query_list ();
 	}
 
@@ -49,7 +49,8 @@ var dbman = (function ($) {
 	
 	self.select_saved_query = function () {
 		var $query = $('#query'),
-			index = $('#queries').find (':selected').val ();
+			index = $('#queries').find (':selected').val (),
+			escape = document.createElement ('textarea');
 		
 		if (index == '') {
 			return;
@@ -57,11 +58,13 @@ var dbman = (function ($) {
 
 		var res = self.saved_queries[index],
 			val = $.codemirror['query'].getValue ();
+		
+		escape.innerHTML = res.query;
 
 		if (val == '') {
-			$.codemirror['query'].setValue ('-- ' + res.title + "\n" + res.query);
+			$.codemirror['query'].setValue ('-- ' + res.title + "\n" + escape.textContent);
 		} else {
-			$.codemirror['query'].setValue (val + ";\n\n-- " + res.title + "\n" + res.query);
+			$.codemirror['query'].setValue (val + ";\n\n-- " + res.title + "\n" + escape.textContent);
 		}
 	};
 
@@ -135,7 +138,7 @@ var dbman = (function ($) {
 			window.event.preventDefault ();
 		}
 
-		var title = prompt ('Query name', '');
+		var title = prompt ($.i18n ('Query name'), '');
 		
 		if (title == null || title == '') {
 			return false; // Cancelled request

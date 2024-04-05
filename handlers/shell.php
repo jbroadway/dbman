@@ -16,14 +16,18 @@ $save_token = $f->generate_csrf_token (false, '/dbman/shell/save');
 
 $page->title = __ ('SQL Shell');
 
-$page->add_script ('/apps/dbman/js/dbman.js?v=4');
+$page->add_script ('/apps/dbman/js/dbman.js?v=5');
 
 $page->add_script (I18n::export (
 	'Error',
 	'Query executed.',
 	'Please wait...',
 	'results',
-	'Export'
+	'Export',
+	'Save Query',
+	'- Saved Queries -',
+	'Query name',
+	'Are you sure you want to delete these items?'
 ));
 
 echo $tpl->render (
