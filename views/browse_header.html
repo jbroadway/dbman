@@ -10,6 +10,8 @@
 		<a href='/dbman/add?table={{table|urlencode}}'>{"Add Item"}</a>{% end %}
 		&nbsp;|&nbsp;
 		<a href='/dbman/info?table={{table|urlencode}}&_token_={{csrf_token|urlencode}}'>{"Table Info"}</a>
+		&nbsp;|&nbsp;
+		<a href='/dbman/shell'>{"SQL Shell"}</a>
 	</div>
 	<div class="e-col-50 e-no-padding" style="text-align: right">
 		<input type="text" name="q" id="search-query" size="40" value="{{q}}" />
