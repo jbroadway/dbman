@@ -76,6 +76,18 @@ if ($f->submit ()) {
 		return;
 	}
 	
+	try {
+		$data = [
+			'table' => $_GET['table'],
+			'pkey' => $pkey,
+			'pval' => $_GET['key'],
+			'values' => $_POST
+		];
+		$this->hook ('dbman/edit', $data);
+	} catch (Exception $e) {
+		error_log ('dbman/add hook error: ' . $e->getMessage ());
+	}
+
 	$this->add_notification (i18n_get ('Item updated.'));
 	$this->redirect ('/dbman/browse?table=' . $_GET['table']);
 }

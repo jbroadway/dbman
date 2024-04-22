@@ -36,6 +36,18 @@ if ($f->submit ()) {
 	$obj->table = $_GET['table'];
 
 	if ($obj->put ()) {
+		try {
+			$data = [
+				'table' => $_GET['table'],
+				'pkey' => DBMan::primary_key ($_GET['table']),
+				'values' => $_POST,
+				'obj' => $obj
+			];
+			$this->hook ('dbman/add', $data);
+		} catch (Exception $e) {
+			error_log ('dbman/add hook error: ' . $e->getMessage ());
+		}
+
 		$this->add_notification (i18n_get ('Item added.'));
 		$this->redirect ('/dbman/browse?table=' . $_GET['table']);
 	}

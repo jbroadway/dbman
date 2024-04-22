@@ -61,10 +61,33 @@ if (is_array ($_POST['key'])) {
 			$this->redirect ('/dbman/browse?table=' . urlencode ($_POST['table']));
 		}
 	}
+
+	try {
+		$data = [
+			'table' => $_POST['table'],
+			'pkey' => DBMan::primary_key ($_POST['table']),
+			'pval' => $_POST['key'],
+		];
+		$this->hook ('dbman/delete', $data);
+	} catch (Exception $e) {
+		error_log ('dbman/add hook error: ' . $e->getMessage ());
+	}
+
 	$this->add_notification (count ($_POST['key']) . ' ' . __ ('items deleted.'));
 	$this->redirect ('/dbman/browse?table=' . urlencode ($_POST['table']));
 } else {
 	if (DB::execute ($sql, $_POST['key'])) {
+		try {
+			$data = [
+				'table' => $_POST['table'],
+				'pkey' => DBMan::primary_key ($_POST['table']),
+				'pval' => $_POST['key'],
+			];
+			$this->hook ('dbman/delete', $data);
+		} catch (Exception $e) {
+			error_log ('dbman/add hook error: ' . $e->getMessage ());
+		}
+
 		$this->add_notification (__ ('Item deleted.'));
 		$this->redirect ('/dbman/browse?table=' . urlencode ($_POST['table']));
 	}
